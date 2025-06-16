@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { Search, Clock, MapPin, Menu as MenuIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search } from "lucide-react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import { restaurants } from "@/data/restaurants";
@@ -8,8 +8,30 @@ import { restaurants } from "@/data/restaurants";
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [headerVisible, setHeaderVisible] = useState(true);
 
   const categories = ["all", "comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres"];
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down
+        setHeaderVisible(false);
+      } else {
+        // Scrolling up
+        setHeaderVisible(true);
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const filteredRestaurants = restaurants.filter((restaurant) => {
     const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -24,28 +46,30 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-6">
-          <div className="text-center mb-6">
-            <div className="flex justify-center mb-4">
+      <header className={`bg-white/95 backdrop-blur-sm shadow-lg sticky top-0 z-50 transition-transform duration-300 ${
+        headerVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}>
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-6">
               <img 
                 src="/lovable-uploads/97e26ff5-dfa8-4f41-ace9-908caced1a64.png" 
                 alt="Victoria Eats" 
-                className="h-20 w-auto"
+                className="h-32 w-auto max-w-xs object-contain"
               />
             </div>
-            <p className="text-gray-600 mt-2 text-lg">Guía Gastronómica de La Victoria</p>
+            <p className="text-gray-600 mt-4 text-xl font-medium">Guía Gastronómica de La Victoria</p>
           </div>
           
           <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           
           {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mt-6">
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`px-5 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                   selectedCategory === category
                     ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
                     : "bg-white text-gray-600 hover:bg-green-50 border border-gray-200 hover:border-green-300"
