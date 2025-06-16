@@ -1,12 +1,90 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { Search, Clock, MapPin, Menu as MenuIcon } from "lucide-react";
+import RestaurantCard from "@/components/RestaurantCard";
+import SearchBar from "@/components/SearchBar";
+import { restaurants } from "@/data/restaurants";
 
 const Index = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const categories = ["all", "comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres"];
+
+  const filteredRestaurants = restaurants.filter((restaurant) => {
+    const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         restaurant.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         restaurant.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = selectedCategory === "all" || restaurant.category.toLowerCase() === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-6">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-green-600 bg-clip-text text-transparent">
+              Victoria Eats
+            </h1>
+            <p className="text-gray-600 mt-2 text-lg">Guía Gastronómica de La Victoria</p>
+          </div>
+          
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          
+          {/* Category Filter */}
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category
+                    ? "bg-gradient-to-r from-orange-500 to-green-500 text-white shadow-lg"
+                    : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                }`}
+              >
+                {category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <p className="text-gray-600 text-center">
+            {filteredRestaurants.length} restaurante{filteredRestaurants.length !== 1 ? 's' : ''} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredRestaurants.map((restaurant) => (
+            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+          ))}
+        </div>
+
+        {filteredRestaurants.length === 0 && (
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🍽️</div>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">No se encontraron restaurantes</h3>
+            <p className="text-gray-500">Intenta con otros términos de búsqueda</p>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-8 mt-16">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-lg font-semibold mb-2">Victoria Eats</p>
+          <p className="text-gray-400">&copy; 2025 Guía Gastronómica La Victoria</p>
+          <p className="text-gray-400 text-sm mt-2">Descubre los mejores sabores de tu ciudad</p>
+        </div>
+      </footer>
     </div>
   );
 };
