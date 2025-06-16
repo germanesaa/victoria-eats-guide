@@ -9,7 +9,6 @@ export const restaurants = [
     location: "Av. Victoria, La Victoria",
     phone: "584126000000",
     menuUrl: "https://ejemplo.com/menu",
-    rating: 4.5,
     description: "Deliciosa comida china y sushi fresco preparado por chefs expertos."
   },
   {
@@ -21,7 +20,6 @@ export const restaurants = [
     location: "Centro Comercial Victoria Plaza",
     phone: "584125555555",
     menuUrl: "https://ejemplo.com/pizza-menu",
-    rating: 4.3,
     description: "Pizzas artesanales con ingredientes frescos y masa casera."
   },
   {
@@ -32,7 +30,6 @@ export const restaurants = [
     hours: "Lun-Jue 11:00am - 10:00pm, Vie-Dom 11:00am - 11:00pm",
     location: "Av. Bolívar, La Victoria",
     phone: "584127777777",
-    rating: 4.2,
     description: "Las mejores hamburguesas gourmet de la ciudad con papas crujientes."
   },
   {
@@ -44,7 +41,6 @@ export const restaurants = [
     location: "Calle Principal, La Victoria",
     phone: "584123333333",
     menuUrl: "https://ejemplo.com/parrilla-menu",
-    rating: 4.7,
     description: "Carnes a la parrilla de primera calidad en ambiente familiar."
   },
   {
@@ -56,7 +52,6 @@ export const restaurants = [
     location: "Centro de La Victoria",
     phone: "584129999999",
     menuUrl: "https://ejemplo.com/sushi-menu",
-    rating: 4.6,
     description: "Sushi auténtico y rolls creativos preparados por sushiman japonés."
   },
   {
@@ -67,7 +62,6 @@ export const restaurants = [
     hours: "Lun-Dom 10:00am - 9:00pm",
     location: "Plaza Miranda, La Victoria",
     phone: "584124444444",
-    rating: 4.4,
     description: "Postres artesanales, tortas personalizadas y dulces tradicionales."
   },
   {
@@ -79,7 +73,6 @@ export const restaurants = [
     location: "Av. Miranda, La Victoria",
     phone: "584128888888",
     menuUrl: "https://ejemplo.com/cafe-menu",
-    rating: 4.1,
     description: "Café de especialidad, desayunos y meriendas en ambiente acogedor."
   },
   {
@@ -90,7 +83,6 @@ export const restaurants = [
     hours: "Mie-Dom 12:00pm - 9:00pm",
     location: "Sector Los Samanes, La Victoria",
     phone: "584126666666",
-    rating: 4.5,
     description: "Mariscos frescos del día preparados con recetas tradicionales."
   }
 ];

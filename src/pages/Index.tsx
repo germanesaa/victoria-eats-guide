@@ -22,14 +22,18 @@ const Index = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-50">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-green-600 bg-clip-text text-transparent">
-              Victoria Eats
-            </h1>
+            <div className="flex justify-center mb-4">
+              <img 
+                src="/lovable-uploads/97e26ff5-dfa8-4f41-ace9-908caced1a64.png" 
+                alt="Victoria Eats" 
+                className="h-20 w-auto"
+              />
+            </div>
             <p className="text-gray-600 mt-2 text-lg">Guía Gastronómica de La Victoria</p>
           </div>
           
@@ -43,8 +47,8 @@ const Index = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   selectedCategory === category
-                    ? "bg-gradient-to-r from-orange-500 to-green-500 text-white shadow-lg"
-                    : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                    ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
+                    : "bg-white text-gray-600 hover:bg-green-50 border border-gray-200 hover:border-green-300"
                 }`}
               >
                 {category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1)}
