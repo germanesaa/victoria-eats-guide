@@ -143,7 +143,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: 7,
-    name: "Café Aromático",
+    name: "Cacao Café",
     category: "café",
     image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
     hours: "Lun-Vie 6:00am - 8:00pm, Sab-Dom 7:00am - 7:00pm",
