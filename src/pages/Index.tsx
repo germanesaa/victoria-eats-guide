@@ -1,9 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import { restaurants } from "@/data/restaurants";
+import { useRestaurantStatus } from "@/hooks/useRestaurantStatus";
+import { notificationService } from "@/services/notificationService";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,6 +12,20 @@ const Index = () => {
   const [headerVisible, setHeaderVisible] = useState(true);
 
   const categories = ["all", "comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres"];
+
+  // Get restaurants with status and sorting
+  const restaurantsWithStatus = useRestaurantStatus(restaurants);
+
+  // Initialize notifications on component mount
+  useEffect(() => {
+    notificationService.initialize().then((success) => {
+      if (success) {
+        console.log('Push notifications initialized successfully');
+      } else {
+        console.log('Push notifications not available or permission denied');
+      }
+    });
+  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -30,9 +45,9 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Filter out the first restaurant (Sabor Victoriano) and apply other filters
-  const filteredRestaurants = restaurants
-    .filter(restaurant => restaurant.id !== 1) // Remove Sabor Victoriano
+  // Filter restaurants (excluding Sabor Victoriano from regular list but keep it for hot section)
+  const filteredRestaurants = restaurantsWithStatus
+    .filter(restaurant => restaurant.id !== 1) // Remove Sabor Victoriano from regular list
     .filter(restaurant => {
       const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                            restaurant.category.toLowerCase().includes(searchTerm.toLowerCase()) || 
