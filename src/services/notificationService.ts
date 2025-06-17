@@ -28,42 +28,48 @@ export class NotificationService {
     try {
       // Check if we're in a Capacitor environment
       if (typeof window !== 'undefined' && (window as any).Capacitor) {
-        const { PushNotifications } = await import('@capacitor/push-notifications');
-        
-        // Request permission for push notifications
-        const permission = await PushNotifications.requestPermissions();
-        
-        if (permission.receive === 'granted') {
-          // Register for push notifications
-          await PushNotifications.register();
+        try {
+          // Dynamic import to handle missing modules gracefully
+          const { PushNotifications } = await import('@capacitor/push-notifications');
           
-          // Get registration token
-          PushNotifications.addListener('registration', (token) => {
-            console.log('Push registration success:', token.value);
-            this.registrationToken = token.value;
-            // TODO: Send token to your backend server
-            this.sendTokenToServer(token.value);
-          });
+          // Request permission for push notifications
+          const permission = await PushNotifications.requestPermissions();
+          
+          if (permission.receive === 'granted') {
+            // Register for push notifications
+            await PushNotifications.register();
+            
+            // Get registration token
+            PushNotifications.addListener('registration', (token) => {
+              console.log('Push registration success:', token.value);
+              this.registrationToken = token.value;
+              // TODO: Send token to your backend server
+              this.sendTokenToServer(token.value);
+            });
 
-          // Handle registration errors
-          PushNotifications.addListener('registrationError', (error) => {
-            console.error('Push registration error:', error);
-          });
+            // Handle registration errors
+            PushNotifications.addListener('registrationError', (error) => {
+              console.error('Push registration error:', error);
+            });
 
-          // Handle incoming notifications
-          PushNotifications.addListener('pushNotificationReceived', (notification) => {
-            console.log('Push notification received:', notification);
-            this.handleIncomingNotification(notification);
-          });
+            // Handle incoming notifications
+            PushNotifications.addListener('pushNotificationReceived', (notification) => {
+              console.log('Push notification received:', notification);
+              this.handleIncomingNotification(notification);
+            });
 
-          // Handle notification action performed
-          PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
-            console.log('Push notification action performed:', notification);
-            this.handleNotificationAction(notification);
-          });
+            // Handle notification action performed
+            PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+              console.log('Push notification action performed:', notification);
+              this.handleNotificationAction(notification);
+            });
 
-          this.isInitialized = true;
-          return true;
+            this.isInitialized = true;
+            return true;
+          }
+        } catch (error) {
+          console.log('Capacitor push notifications not available yet. Install @capacitor/push-notifications to enable.');
+          return false;
         }
       } else {
         console.log('Push notifications not available - not in Capacitor environment');
@@ -169,6 +175,7 @@ export class NotificationService {
   async scheduleLocalNotification(notification: NotificationData) {
     if (typeof window !== 'undefined' && (window as any).Capacitor) {
       try {
+        // Dynamic import to handle missing modules gracefully
         const { LocalNotifications } = await import('@capacitor/local-notifications');
         
         await LocalNotifications.schedule({
@@ -181,7 +188,7 @@ export class NotificationService {
           }]
         });
       } catch (error) {
-        console.error('Failed to schedule local notification:', error);
+        console.log('Local notifications not available yet. Install @capacitor/local-notifications to enable.');
       }
     }
   }

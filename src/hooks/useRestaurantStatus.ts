@@ -12,7 +12,6 @@ interface RestaurantWithStatus extends Restaurant {
 export const useRestaurantStatus = (restaurants: Restaurant[]): RestaurantWithStatus[] => {
   return useMemo(() => {
     const now = new Date();
-    const currentDay = now.toLocaleLowerCase().split(' ')[0];
     const currentTime = now.getHours() * 100 + now.getMinutes();
     
     const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
