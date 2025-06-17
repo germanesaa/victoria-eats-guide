@@ -28,11 +28,8 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
 
   const menuCategories = [
     { name: "Hamburguesas", items: ["Clásica", "Especial", "Doble Carne"], price: "$8 - $15" },
-    { name: "Cafés", items: ["Americano", "Cappuccino", "Latte"], price: "$2 - $5" },
     { name: "Pizzas", items: ["Margherita", "Pepperoni", "Hawaiana"], price: "$12 - $20" },
-    { name: "Postres", items: ["Tiramisu", "Cheesecake", "Brownie"], price: "$4 - $8" },
-    { name: "Bebidas", items: ["Jugos naturales", "Sodas", "Agua"], price: "$1 - $4" },
-    { name: "Platos principales", items: ["Pollo asado", "Pescado", "Pasta"], price: "$10 - $25" }
+    { name: "Bebidas", items: ["Jugos naturales", "Sodas", "Agua"], price: "$1 - $4" }
   ];
 
   return (
@@ -58,7 +55,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
           </Button>
 
           <div className="absolute bottom-4 left-4 right-4">
-            <Badge variant="secondary" className="bg-white/90 text-gray-700 mb-2">
+            <Badge variant="secondary" className="bg-white/90 text-gray-700 mb-2 text-right">
               {restaurant.category}
             </Badge>
             <h2 className="text-2xl font-bold text-white mb-1">{restaurant.name}</h2>
@@ -83,28 +80,32 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
           </div>
 
           {/* Menu Section */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-800">Menú</h3>
-              <Utensils className="w-5 h-5 text-green-600" />
+              <h3 className="text-2xl font-bold text-gray-800 font-['Playfair_Display']">Menú</h3>
+              <Utensils className="w-6 h-6 text-green-600" />
             </div>
             
             {/* Menu Categories */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="space-y-6">
               {menuCategories.map((category, index) => (
-                <div key={index} className="p-3 bg-gray-50 rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-800">{category.name}</h4>
-                    <div className="flex items-center text-green-600">
-                      <DollarSign className="w-3 h-3" />
-                      <span className="text-xs font-medium">{category.price}</span>
+                <div key={index} className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-xl font-semibold text-gray-800 font-['Playfair_Display']">{category.name}</h4>
+                    <div className="text-2xl font-bold text-green-600 font-['Playfair_Display']">
+                      {category.price}
                     </div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="grid grid-cols-3 gap-4">
                     {category.items.map((item, itemIndex) => (
-                      <p key={itemIndex} className="text-xs text-gray-600">• {item}</p>
+                      <div key={itemIndex} className="text-center p-3 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+                        <p className="text-sm font-medium text-gray-700">{item}</p>
+                      </div>
                     ))}
                   </div>
+                  {index < menuCategories.length - 1 && (
+                    <div className="mt-6 border-b border-gray-200"></div>
+                  )}
                 </div>
               ))}
             </div>
@@ -112,11 +113,11 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
             {/* External Menu Link */}
             <Button 
               variant="outline" 
-              className="w-full flex items-center justify-center gap-2 hover:bg-green-50 hover:border-green-300 mt-4"
+              className="w-full flex items-center justify-center gap-2 hover:bg-green-50 hover:border-green-300 mt-6 py-3"
               onClick={() => window.open(restaurant.menuUrl || '#', '_blank')}
             >
               <ExternalLink className="w-4 h-4" />
-              <span>Ver menú completo</span>
+              <span className="font-medium">Ver menú completo</span>
             </Button>
           </div>
 
