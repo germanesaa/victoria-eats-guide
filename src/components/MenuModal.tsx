@@ -1,7 +1,8 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Clock, MapPin, Phone, Utensils, DollarSign } from "lucide-react";
+import { Clock, MapPin, Phone, Utensils, DollarSign, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import WhatsAppButton from "./WhatsAppButton";
 
 interface Restaurant {
@@ -27,7 +28,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 bg-white">
         {/* Restaurant Image Header */}
         <div className="relative h-48 w-full">
           <img 
@@ -47,7 +48,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 bg-white">
           {/* Restaurant Info */}
           <div className="space-y-3 mb-6">
             <div className="flex items-center text-gray-600">
@@ -91,6 +92,16 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
                   <span className="text-sm font-medium">Ver precios</span>
                 </div>
               </div>
+
+              {/* External Menu Link */}
+              <Button 
+                variant="outline" 
+                className="w-full flex items-center justify-center gap-2 hover:bg-green-50 hover:border-green-300"
+                onClick={() => window.open(restaurant.menuUrl || '#', '_blank')}
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Ver menú completo</span>
+              </Button>
             </div>
           </div>
 
