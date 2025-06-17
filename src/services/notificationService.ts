@@ -29,8 +29,13 @@ export class NotificationService {
       // Check if we're in a Capacitor environment
       if (typeof window !== 'undefined' && (window as any).Capacitor) {
         try {
-          // Dynamic import to handle missing modules gracefully
-          const { PushNotifications } = await import('@capacitor/push-notifications');
+          // Use eval to prevent TypeScript from resolving the import at compile time
+          const PushNotifications = await this.loadPushNotifications();
+          
+          if (!PushNotifications) {
+            console.log('Push notifications module not available');
+            return false;
+          }
           
           // Request permission for push notifications
           const permission = await PushNotifications.requestPermissions();
@@ -40,7 +45,7 @@ export class NotificationService {
             await PushNotifications.register();
             
             // Get registration token
-            PushNotifications.addListener('registration', (token) => {
+            PushNotifications.addListener('registration', (token: any) => {
               console.log('Push registration success:', token.value);
               this.registrationToken = token.value;
               // TODO: Send token to your backend server
@@ -48,18 +53,18 @@ export class NotificationService {
             });
 
             // Handle registration errors
-            PushNotifications.addListener('registrationError', (error) => {
+            PushNotifications.addListener('registrationError', (error: any) => {
               console.error('Push registration error:', error);
             });
 
             // Handle incoming notifications
-            PushNotifications.addListener('pushNotificationReceived', (notification) => {
+            PushNotifications.addListener('pushNotificationReceived', (notification: any) => {
               console.log('Push notification received:', notification);
               this.handleIncomingNotification(notification);
             });
 
             // Handle notification action performed
-            PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+            PushNotifications.addListener('pushNotificationActionPerformed', (notification: any) => {
               console.log('Push notification action performed:', notification);
               this.handleNotificationAction(notification);
             });
@@ -81,6 +86,26 @@ export class NotificationService {
     } catch (error) {
       console.error('Failed to initialize push notifications:', error);
       return false;
+    }
+  }
+
+  // Dynamic import helper to avoid TypeScript compilation issues
+  private async loadPushNotifications(): Promise<any> {
+    try {
+      const module = await eval('import("@capacitor/push-notifications")');
+      return module.PushNotifications;
+    } catch {
+      return null;
+    }
+  }
+
+  // Dynamic import helper for local notifications
+  private async loadLocalNotifications(): Promise<any> {
+    try {
+      const module = await eval('import("@capacitor/local-notifications")');
+      return module.LocalNotifications;
+    } catch {
+      return null;
     }
   }
 
@@ -175,8 +200,12 @@ export class NotificationService {
   async scheduleLocalNotification(notification: NotificationData) {
     if (typeof window !== 'undefined' && (window as any).Capacitor) {
       try {
-        // Dynamic import to handle missing modules gracefully
-        const { LocalNotifications } = await import('@capacitor/local-notifications');
+        const LocalNotifications = await this.loadLocalNotifications();
+        
+        if (!LocalNotifications) {
+          console.log('Local notifications module not available');
+          return;
+        }
         
         await LocalNotifications.schedule({
           notifications: [{
