@@ -179,5 +179,24 @@ export const restaurants: Restaurant[] = [
     location: "Sector Los Samanes, La Victoria",
     phone: "584126666666",
     description: "Mariscos frescos del día preparados con recetas tradicionales."
+  },
+  {
+    id: 9,
+    name: "Arturos",
+    category: "pollos",
+    image: "https://images.unsplash.com/photo-1559737558-2f5a35fc2fea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    hours: "Lun-Dom 12:00pm - 9:00pm",
+    detailedHours: {
+      monday: { open: "12:00", close: "21:00" },
+      tuesday: { open: "12:00", close: "21:00" },
+      wednesday: { open: "12:00", close: "21:00" },
+      thursday: { open: "12:00", close: "21:00" },
+      friday: { open: "12:00", close: "21:00" },
+      saturday: { open: "12:00", close: "21:00" },
+      sunday: { open: "12:00", close: "21:00" }
+    },
+    location: "C.C Palma Center, La Victoria",
+    phone: "584126666666",
+    description: "Pollo de verdad."
   }
 ];
