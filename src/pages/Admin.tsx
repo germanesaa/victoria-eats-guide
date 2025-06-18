@@ -7,14 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Upload, Image as ImageIcon } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Admin = () => {
   const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const emptyRestaurant: Omit<Restaurant, 'id'> = {
@@ -42,6 +44,72 @@ const Admin = () => {
   const [newRestaurant, setNewRestaurant] = useState(emptyRestaurant);
 
   const categories = ["comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres", "café", "mariscos", "pollos"];
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Error",
+        description: "Por favor selecciona un archivo de imagen válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Error",
+        description: "La imagen es muy grande. Por favor selecciona una imagen menor a 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `restaurant-images/${fileName}`;
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('restaurant-images')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('restaurant-images')
+        .getPublicUrl(filePath);
+
+      // Update the restaurant image URL
+      setNewRestaurant({ ...newRestaurant, image: publicUrl });
+
+      toast({
+        title: "Imagen subida exitosamente",
+        description: "La imagen ha sido subida y está lista para usar.",
+      });
+
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Error al subir imagen",
+        description: error.message || "Ocurrió un error al subir la imagen.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleSave = () => {
     if (isAddingNew) {
@@ -148,15 +216,61 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label htmlFor="image">URL de Imagen</Label>
-                  <Input
-                    id="image"
-                    value={newRestaurant.image}
-                    onChange={(e) => setNewRestaurant({...newRestaurant, image: e.target.value})}
-                    placeholder="https://ejemplo.com/imagen.jpg"
-                  />
+              </div>
+
+              {/* Image Upload Section */}
+              <div className="space-y-4">
+                <Label>Imagen del Restaurante</Label>
+                <div className="flex flex-col space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={isUploading}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={isUploading}
+                      className="flex items-center gap-2"
+                    >
+                      {isUploading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+                          Subiendo...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4" />
+                          Subir Imagen
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  
+                  {newRestaurant.image && (
+                    <div className="flex items-center space-x-4">
+                      <img 
+                        src={newRestaurant.image} 
+                        alt="Preview" 
+                        className="w-20 h-20 object-cover rounded-lg border"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-600">Imagen cargada exitosamente</p>
+                        <p className="text-xs text-gray-400 truncate">{newRestaurant.image}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="text-xs text-gray-500">
+                    Formatos soportados: JPG, PNG, GIF. Tamaño máximo: 5MB
+                  </div>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="phone">Teléfono</Label>
                   <Input
