@@ -65,14 +65,18 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
             alt={restaurant.name} 
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
           />
-          <div className="absolute top-3 right-3 flex flex-col gap-2">
-            <Badge variant="secondary" className="bg-white/90 text-gray-700 text-right justify-end">
-              {restaurant.category}
-            </Badge>
+          <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
+            <div className="bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 min-w-[80px] flex justify-center">
+              <span className="text-white text-xs font-medium text-center">
+                {restaurant.category}
+              </span>
+            </div>
             {restaurant.status && (
-              <Badge className={`${getStatusColor(restaurant.status)} text-xs text-right justify-end`}>
-                {getStatusText(restaurant.status, restaurant.opensIn)}
-              </Badge>
+              <div className={`${getStatusColor(restaurant.status)} backdrop-blur-sm rounded-full px-3 py-1 min-w-[80px] flex justify-center`}>
+                <span className="text-xs font-medium text-center">
+                  {getStatusText(restaurant.status, restaurant.opensIn)}
+                </span>
+              </div>
             )}
           </div>
           {restaurant.isHot && (
