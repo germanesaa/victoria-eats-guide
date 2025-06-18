@@ -91,7 +91,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
               <Utensils className="w-6 h-6 text-green-600" />
             </div>
             
-            {/* Menu Categories - simplified display */}
+            {/* Menu Categories - reduced pricing size */}
             <div className="space-y-6">
               {menuCategories.map((category, index) => (
                 <div key={index} className="flex items-center justify-between py-4 border-b border-gray-100 last:border-b-0">
@@ -99,7 +99,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
                     <h4 className="text-xl font-semibold text-gray-800 font-playfair mb-1">{category.name}</h4>
                     <p className="text-sm text-gray-600">{category.items.join(', ')}</p>
                   </div>
-                  <div className="text-3xl font-bold text-green-600 font-playfair">
+                  <div className="text-xl font-bold text-green-600 font-playfair">
                     {category.price}
                   </div>
                 </div>
