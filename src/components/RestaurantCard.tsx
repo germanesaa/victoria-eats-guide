@@ -121,7 +121,7 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
             <WhatsAppButton phone={restaurant.phone} restaurantName={restaurant.name} />
             
             <button 
-              className="flex-1 bg-white border border-gray-200 hover:bg-green-50 hover:border-green-300 hover:text-green-700 text-gray-700 font-medium py-2 px-4 rounded-lg transition-all duration-200 text-sm"
+              className="flex-1 bg-white border border-gray-200 hover:bg-green-50 hover:border-green-300 hover:text-green-700 text-gray-700 font-medium py-2.5 px-4 rounded-xl transition-all duration-200 text-sm shadow-sm hover:shadow-md"
               onClick={() => setIsMenuOpen(true)}
             >
               Ver Menú
