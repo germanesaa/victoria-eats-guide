@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Edit, Trash2, Save, Upload } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
 import { useToast } from "@/hooks/use-toast";
+import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
 
 const Admin = () => {
   const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
@@ -48,21 +48,12 @@ const Admin = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
+    // Validate file
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
       toast({
         title: "Error",
-        description: "Por favor selecciona un archivo de imagen válido.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "Error",
-        description: "La imagen es muy grande. Por favor selecciona una imagen menor a 5MB.",
+        description: validation.error,
         variant: "destructive",
       });
       return;
@@ -71,11 +62,8 @@ const Admin = () => {
     setIsUploading(true);
 
     try {
-      // For now, we'll use a placeholder URL until Supabase storage is properly configured
-      // In a real implementation, this would upload to Supabase storage
-      const mockImageUrl = URL.createObjectURL(file);
-      
-      setNewRestaurant({ ...newRestaurant, image: mockImageUrl });
+      const imageUrl = await uploadImageToPublic(file);
+      setNewRestaurant({ ...newRestaurant, image: imageUrl });
 
       toast({
         title: "Imagen cargada",
@@ -218,6 +206,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                       variant="outline"
                       disabled={isUploading}
                       className="flex items-center gap-2"
+                      onClick={() => document.querySelector('input[type="file"]')?.click()}
                     >
                       {isUploading ? (
                         <>
