@@ -120,14 +120,12 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
           <div className="flex gap-2">
             <WhatsAppButton phone={restaurant.phone} restaurantName={restaurant.name} />
             
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1 hover:bg-green-50 hover:border-green-300 hover:text-green-700" 
+            <button 
+              className="flex-1 bg-white border border-gray-200 hover:bg-green-50 hover:border-green-300 hover:text-green-700 text-gray-700 font-medium py-2 px-4 rounded-lg transition-all duration-200 text-sm"
               onClick={() => setIsMenuOpen(true)}
             >
               Ver Menú
-            </Button>
+            </button>
           </div>
         </div>
       </div>

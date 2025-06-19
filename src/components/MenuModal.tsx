@@ -39,7 +39,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 bg-white">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 bg-white [&>button]:hidden">
         {/* Restaurant Image Header */}
         <div className="relative h-48 w-full">
           <img 
@@ -49,14 +49,14 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
           />
           <div className="absolute inset-0 bg-black/30" />
           
-          {/* Close Button */}
+          {/* Close Button - Only this one, removed the duplicate */}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 h-8 w-8 bg-white/20 hover:bg-white/30 text-white"
+            className="absolute top-4 right-4 h-10 w-10 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm border border-white/20"
             onClick={onClose}
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </Button>
 
           <div className="absolute bottom-4 left-4 right-4">
@@ -106,15 +106,14 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
               ))}
             </div>
 
-            {/* External Menu Link */}
-            <Button 
-              variant="outline" 
-              className="w-full flex items-center justify-center gap-2 hover:bg-green-50 hover:border-green-300 mt-6 py-3"
+            {/* External Menu Link - Styled with rounded corners and gradient */}
+            <button 
+              className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 mt-6"
               onClick={() => window.open(restaurant.menuUrl || '#', '_blank')}
             >
-              <ExternalLink className="w-4 h-4" />
-              <span className="font-medium">Ver menú completo</span>
-            </Button>
+              <ExternalLink className="w-5 h-5" />
+              <span>Ver menú completo</span>
+            </button>
           </div>
 
           {/* Contact Actions - Circular Buttons */}
