@@ -7,10 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, Upload, Image as ImageIcon } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Upload } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 
 const Admin = () => {
   const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
@@ -72,38 +71,22 @@ const Admin = () => {
     setIsUploading(true);
 
     try {
-      // Create unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `restaurant-images/${fileName}`;
-
-      // Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('restaurant-images')
-        .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('restaurant-images')
-        .getPublicUrl(filePath);
-
-      // Update the restaurant image URL
-      setNewRestaurant({ ...newRestaurant, image: publicUrl });
+      // For now, we'll use a placeholder URL until Supabase storage is properly configured
+      // In a real implementation, this would upload to Supabase storage
+      const mockImageUrl = URL.createObjectURL(file);
+      
+      setNewRestaurant({ ...newRestaurant, image: mockImageUrl });
 
       toast({
-        title: "Imagen subida exitosamente",
-        description: "La imagen ha sido subida y está lista para usar.",
+        title: "Imagen cargada",
+        description: "La imagen ha sido cargada exitosamente.",
       });
 
     } catch (error: any) {
       console.error('Error uploading image:', error);
       toast({
-        title: "Error al subir imagen",
-        description: error.message || "Ocurrió un error al subir la imagen.",
+        title: "Error al cargar imagen",
+        description: "Ocurrió un error al cargar la imagen.",
         variant: "destructive",
       });
     } finally {
@@ -259,7 +242,6 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                       />
                       <div className="flex-1">
                         <p className="text-sm text-gray-600">Imagen cargada exitosamente</p>
-                        <p className="text-xs text-gray-400 truncate">{newRestaurant.image}</p>
                       </div>
                     </div>
                   )}
