@@ -206,7 +206,10 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                       variant="outline"
                       disabled={isUploading}
                       className="flex items-center gap-2"
-                      onClick={() => document.querySelector('input[type="file"]')?.click()}
+                      onClick={() => {
+                        const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+                        fileInput?.click();
+                      }}
                     >
                       {isUploading ? (
                         <>
