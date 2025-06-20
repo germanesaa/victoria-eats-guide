@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,13 +25,13 @@ const Admin = () => {
     image: "",
     hours: "",
     detailedHours: {
-      monday: null,
-      tuesday: null,
-      wednesday: null,
-      thursday: null,
-      friday: null,
-      saturday: null,
-      sunday: null
+      monday: { open: "09:00", close: "20:00" },
+      tuesday: { open: "09:00", close: "20:00" },
+      wednesday: { open: "09:00", close: "20:00" },
+      thursday: { open: "09:00", close: "20:00" },
+      friday: { open: "09:00", close: "20:00" },
+      saturday: { open: "09:00", close: "20:00" },
+      sunday: { open: "09:00", close: "20:00" }
     },
     location: "",
     phone: "",
@@ -283,7 +284,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
             id="hours"
             value={restaurant.hours}
             onChange={(e) => setRestaurant({...restaurant, hours: e.target.value})}
-            placeholder="Lun-Dom 12:00pm - 10:00pm"
+            placeholder="Lun-Dom 09:00am - 08:00pm"
           />
         </div>
         <div>
@@ -326,7 +327,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-white p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-800">Administrador de Restaurantes</h1>

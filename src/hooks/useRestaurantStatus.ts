@@ -18,6 +18,12 @@ export const useRestaurantStatus = (restaurants: Restaurant[]): RestaurantWithSt
     const today = daysOfWeek[now.getDay()];
 
     const getRestaurantStatus = (restaurant: Restaurant): { status: RestaurantStatus; opensIn?: string } => {
+      // If no detailed hours, assume open during typical business hours
+      if (!restaurant.detailedHours || !restaurant.detailedHours[today]) {
+        console.log(`Restaurant ${restaurant.name} has no detailed hours for ${today}, assuming closed`);
+        return { status: 'closed' };
+      }
+
       const todayHours = restaurant.detailedHours[today];
       
       if (!todayHours) {
@@ -35,7 +41,9 @@ export const useRestaurantStatus = (restaurants: Restaurant[]): RestaurantWithSt
       const openTime = parseInt(todayHours.open.replace(':', ''));
       const closeTime = parseInt(todayHours.close.replace(':', ''));
       
-      // Handle midnight crossover (e.g., 18:00 - 24:00)
+      console.log(`Restaurant ${restaurant.name}: Current time ${currentTime}, Open ${openTime}, Close ${closeTime}`);
+      
+      // Handle midnight crossover (e.g., 18:00 - 02:00)
       if (closeTime < openTime) {
         if (currentTime >= openTime || currentTime <= closeTime) {
           return { status: 'open' };
