@@ -9,6 +9,8 @@ interface RestaurantWithStatus extends Restaurant {
   opensIn?: string;
 }
 
+const defaultHours = { open: "09:00", close: "20:00" };
+
 export const useRestaurantStatus = (restaurants: Restaurant[]): RestaurantWithStatus[] => {
   return useMemo(() => {
     const now = new Date();
@@ -18,25 +20,22 @@ export const useRestaurantStatus = (restaurants: Restaurant[]): RestaurantWithSt
     const today = daysOfWeek[now.getDay()];
 
     const getRestaurantStatus = (restaurant: Restaurant): { status: RestaurantStatus; opensIn?: string } => {
-      // If no detailed hours, assume open during typical business hours
-      if (!restaurant.detailedHours || !restaurant.detailedHours[today]) {
-        console.log(`Restaurant ${restaurant.name} has no detailed hours for ${today}, assuming closed`);
-        return { status: 'closed' };
-      }
-
-      const todayHours = restaurant.detailedHours[today];
-      
-      if (!todayHours) {
-        // Check if opens tomorrow
-        const tomorrowIndex = (now.getDay() + 1) % 7;
-        const tomorrow = daysOfWeek[tomorrowIndex];
-        const tomorrowHours = restaurant.detailedHours[tomorrow];
+      // If no detailed hours at all, use default hours
+      if (!restaurant.detailedHours) {
+        console.log(`Restaurant ${restaurant.name} has no detailed hours, using default hours`);
+        const openTime = parseInt(defaultHours.open.replace(':', ''));
+        const closeTime = parseInt(defaultHours.close.replace(':', ''));
         
-        if (tomorrowHours) {
-          return { status: 'closed', opensIn: `Abre mañana a las ${tomorrowHours.open}` };
+        if (currentTime >= openTime && currentTime <= closeTime) {
+          return { status: 'open' };
         }
         return { status: 'closed' };
       }
+
+      // Get today's hours, fallback to default if missing
+      const todayHours = restaurant.detailedHours[today] || defaultHours;
+      
+      console.log(`Restaurant ${restaurant.name}: Using hours for ${today}:`, todayHours);
 
       const openTime = parseInt(todayHours.open.replace(':', ''));
       const closeTime = parseInt(todayHours.close.replace(':', ''));
@@ -63,7 +62,12 @@ export const useRestaurantStatus = (restaurants: Restaurant[]): RestaurantWithSt
         return { status: 'opening-soon', opensIn };
       }
 
-      return { status: 'closed' };
+      // Check if opens tomorrow
+      const tomorrowIndex = (now.getDay() + 1) % 7;
+      const tomorrow = daysOfWeek[tomorrowIndex];
+      const tomorrowHours = restaurant.detailedHours[tomorrow] || defaultHours;
+      
+      return { status: 'closed', opensIn: `Abre mañana a las ${tomorrowHours.open}` };
     };
 
     const restaurantsWithStatus = restaurants.map(restaurant => {
