@@ -29,11 +29,11 @@
     --radius: 1rem;
 
     /* Liquid glass tokens */
-    --glass-bg: 0 0% 100% / 0.55;
-    --glass-border: 0 0% 100% / 0.45;
-    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
-    --glass-blur: 20px;
-    --glass-bg-strong: 0 0% 100% / 0.75;
+    --glass-bg: 0 0% 100% / 0.18;
+    --glass-border: 0 0% 100% / 0.35;
+    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.18);
+    --glass-blur: 28px;
+    --glass-bg-strong: 0 0% 100% / 0.35;
   }
 
   * {
@@ -73,19 +73,20 @@
 }
 
 .glass-card {
-  background: hsla(var(--glass-bg-strong));
+  background: hsla(0 0% 100% / 0.22);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid hsla(0 0% 100% / 0.6);
+  border: 1px solid hsla(0 0% 100% / 0.4);
   box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 hsla(0, 0%, 100%, 0.5);
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 hsla(0, 0%, 100%, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
+  background: hsla(0 0% 100% / 0.3);
   box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 hsla(0, 0%, 100%, 0.6);
+    0 8px 40px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 hsla(0, 0%, 100%, 0.5);
   transform: translateY(-2px);
 }
