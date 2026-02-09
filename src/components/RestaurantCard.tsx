@@ -1,6 +1,5 @@
 
 import { Clock, MapPin, Star, Flame } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import WhatsAppButton from "./WhatsAppButton";
 import MenuModal from "./MenuModal";
@@ -30,13 +29,13 @@ interface RestaurantCardProps {
 const getStatusColor = (status: RestaurantStatus) => {
   switch (status) {
     case 'open':
-      return 'bg-green-500 text-white';
+      return 'bg-emerald-500/80 text-white backdrop-blur-sm';
     case 'opening-soon':
-      return 'bg-yellow-500 text-white';
+      return 'bg-amber-400/80 text-white backdrop-blur-sm';
     case 'closed':
-      return 'bg-red-500 text-white';
+      return 'bg-red-500/70 text-white backdrop-blur-sm';
     default:
-      return 'bg-gray-500 text-white';
+      return 'bg-gray-500/70 text-white backdrop-blur-sm';
   }
 };
 
@@ -58,21 +57,21 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-1">
+      <div className="glass-card rounded-2xl overflow-hidden group">
         <div className="relative overflow-hidden">
           <img 
             src={restaurant.image} 
             alt={restaurant.name} 
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" 
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" 
           />
           <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
-            <div className="bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 min-w-[80px] flex justify-center">
+            <div className="bg-foreground/50 backdrop-blur-md rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20">
               <span className="text-white text-xs font-medium text-center">
                 {restaurant.category}
               </span>
             </div>
             {restaurant.status && (
-              <div className={`${getStatusColor(restaurant.status)} backdrop-blur-sm rounded-full px-3 py-1 min-w-[80px] flex justify-center`}>
+              <div className={`${getStatusColor(restaurant.status)} rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20`}>
                 <span className="text-xs font-medium text-center">
                   {getStatusText(restaurant.status, restaurant.opensIn)}
                 </span>
@@ -81,7 +80,7 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
           </div>
           {restaurant.isHot && (
             <div className="absolute top-3 left-3">
-              <Badge className="bg-red-500 text-white flex items-center gap-1">
+              <Badge className="bg-red-500/80 backdrop-blur-sm text-white flex items-center gap-1 border border-white/20">
                 <Flame className="w-3 h-3" />
                 HOT
               </Badge>
@@ -91,28 +90,28 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
         
         <div className="p-5">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors">
+            <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
               {restaurant.name}
             </h3>
             {restaurant.isHot && (
-              <Star className="w-5 h-5 text-yellow-500 fill-current" />
+              <Star className="w-5 h-5 text-amber-400 fill-current" />
             )}
           </div>
           
           {restaurant.description && (
-            <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+            <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
               {restaurant.description}
             </p>
           )}
           
           <div className="space-y-2 mb-4">
-            <div className="flex items-center text-gray-600 text-sm">
-              <Clock className="w-4 h-4 mr-2 text-green-600" />
+            <div className="flex items-center text-muted-foreground text-sm">
+              <Clock className="w-4 h-4 mr-2 text-primary" />
               <span>{restaurant.hours}</span>
             </div>
             
-            <div className="flex items-center text-gray-600 text-sm">
-              <MapPin className="w-4 h-4 mr-2 text-green-600" />
+            <div className="flex items-center text-muted-foreground text-sm">
+              <MapPin className="w-4 h-4 mr-2 text-primary" />
               <span className="truncate">{restaurant.location}</span>
             </div>
           </div>
@@ -121,7 +120,7 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
             <WhatsAppButton phone={restaurant.phone} restaurantName={restaurant.name} />
             
             <button 
-              className="flex-1 bg-white border border-gray-200 hover:bg-green-50 hover:border-green-300 hover:text-green-700 text-gray-700 font-medium py-2.5 px-4 rounded-xl transition-all duration-200 text-sm shadow-sm hover:shadow-md"
+              className="flex-1 glass font-medium py-2.5 px-4 rounded-xl transition-all duration-200 text-sm text-foreground/80 hover:text-primary hover:border-primary/30"
               onClick={() => setIsMenuOpen(true)}
             >
               Ver Menú
