@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
+import PromoBanner from "@/components/PromoBanner";
 import { restaurants } from "@/data/restaurants";
 import { useRestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
@@ -98,6 +99,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="pt-32 pb-8">
         <div className="container mx-auto px-4">
+          <PromoBanner />
           <div className="mb-6">
             <p className="text-muted-foreground text-center">
               {filteredRestaurants.length} restaurante{filteredRestaurants.length !== 1 ? 's' : ''} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}

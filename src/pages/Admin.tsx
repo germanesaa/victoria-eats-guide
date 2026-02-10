@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, Upload, X } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Upload, X, Megaphone } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
+import { getBannerConfig, saveBannerConfig, BannerConfig } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
 
@@ -17,6 +18,8 @@ const Admin = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [bannerConfig, setBannerConfig] = useState<BannerConfig>(getBannerConfig());
+  const [isBannerUploading, setIsBannerUploading] = useState(false);
   const { toast } = useToast();
 
   const emptyRestaurant: Omit<Restaurant, 'id'> = {
@@ -342,6 +345,124 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
             </Button>
           </div>
         </div>
+
+        {/* Banner Management */}
+        <Card className="mb-6 border-primary/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Megaphone className="w-5 h-5 text-primary" />
+              Banner Promocional
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <Switch
+                id="bannerEnabled"
+                checked={bannerConfig.enabled}
+                onCheckedChange={(checked) => {
+                  const updated = { ...bannerConfig, enabled: checked };
+                  setBannerConfig(updated);
+                  saveBannerConfig(updated);
+                  toast({ title: checked ? "Banner activado" : "Banner desactivado" });
+                }}
+              />
+              <Label htmlFor="bannerEnabled" className="font-medium">
+                {bannerConfig.enabled ? "Banner activo" : "Banner desactivado"}
+              </Label>
+            </div>
+
+            <div>
+              <Label>Imagen del banner</Label>
+              <div className="flex items-center gap-3 mt-1">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  disabled={isBannerUploading}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const validation = validateImageFile(file);
+                    if (!validation.valid) {
+                      toast({ title: "Error", description: validation.error, variant: "destructive" });
+                      return;
+                    }
+                    setIsBannerUploading(true);
+                    try {
+                      const imageUrl = await uploadImageToPublic(file);
+                      const updated = { ...bannerConfig, image: imageUrl };
+                      setBannerConfig(updated);
+                      saveBannerConfig(updated);
+                      toast({ title: "Imagen del banner cargada" });
+                    } catch {
+                      toast({ title: "Error al cargar imagen", variant: "destructive" });
+                    } finally {
+                      setIsBannerUploading(false);
+                    }
+                  }}
+                />
+              </div>
+              {bannerConfig.image && (
+                <div className="mt-2 flex items-center gap-3">
+                  <img src={bannerConfig.image} alt="Banner preview" className="h-20 rounded-lg border object-cover" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const updated = { ...bannerConfig, image: "" };
+                      setBannerConfig(updated);
+                      saveBannerConfig(updated);
+                    }}
+                  >
+                    <X className="w-4 h-4" /> Quitar
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <Label>Texto del banner</Label>
+              <Textarea
+                value={bannerConfig.text}
+                onChange={(e) => {
+                  const updated = { ...bannerConfig, text: e.target.value };
+                  setBannerConfig(updated);
+                  saveBannerConfig(updated);
+                }}
+                placeholder="Ej: 🔥 ¡Promoción especial! 2x1 en pizzas este fin de semana"
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>URL del enlace (opcional)</Label>
+                <Input
+                  value={bannerConfig.linkUrl}
+                  onChange={(e) => {
+                    const updated = { ...bannerConfig, linkUrl: e.target.value };
+                    setBannerConfig(updated);
+                    saveBannerConfig(updated);
+                  }}
+                  placeholder="https://..."
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label>Texto del botón (opcional)</Label>
+                <Input
+                  value={bannerConfig.linkText}
+                  onChange={(e) => {
+                    const updated = { ...bannerConfig, linkText: e.target.value };
+                    setBannerConfig(updated);
+                    saveBannerConfig(updated);
+                  }}
+                  placeholder="Ver más"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Add New Restaurant Form */}
         {isAddingNew && (
