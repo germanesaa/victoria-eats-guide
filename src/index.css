@@ -34,6 +34,42 @@
     --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.22);
     --glass-blur: 36px;
     --glass-bg-strong: 0 0% 100% / 0.15;
+    --glass-card-bg: 0 0% 100% / 0.1;
+    --glass-card-bg-hover: 0 0% 100% / 0.18;
+    --glass-card-border: 0 0% 100% / 0.28;
+    --glass-card-inset: 0 0% 100% / 0.3;
+  }
+
+  .dark {
+    --background: 220 20% 10%;
+    --foreground: 220 15% 90%;
+    --card: 220 20% 14%;
+    --card-foreground: 220 15% 90%;
+    --popover: 220 20% 14%;
+    --popover-foreground: 220 15% 90%;
+    --primary: 152 60% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 18%;
+    --secondary-foreground: 220 15% 80%;
+    --muted: 220 14% 16%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 210 20% 16%;
+    --accent-foreground: 220 15% 90%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 20%;
+    --input: 220 13% 20%;
+    --ring: 152 60% 42%;
+
+    /* Dark mode glass tokens */
+    --glass-bg: 0 0% 100% / 0.06;
+    --glass-border: 0 0% 100% / 0.15;
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --glass-bg-strong: 0 0% 100% / 0.12;
+    --glass-card-bg: 0 0% 100% / 0.08;
+    --glass-card-bg-hover: 0 0% 100% / 0.14;
+    --glass-card-border: 0 0% 100% / 0.18;
+    --glass-card-inset: 0 0% 100% / 0.15;
   }
 
   * {
@@ -73,20 +109,20 @@
 }
 
 .glass-card {
-  background: hsla(0 0% 100% / 0.1);
-  backdrop-filter: blur(36px);
-  -webkit-backdrop-filter: blur(36px);
-  border: 1px solid hsla(0 0% 100% / 0.28);
+  background: hsla(var(--glass-card-bg));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid hsla(var(--glass-card-border));
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 hsla(0, 0%, 100%, 0.3);
+    inset 0 1px 0 hsla(var(--glass-card-inset));
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  background: hsla(0 0% 100% / 0.18);
+  background: hsla(var(--glass-card-bg-hover));
   box-shadow:
     0 8px 40px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 hsla(0, 0%, 100%, 0.4);
+    inset 0 1px 0 hsla(var(--glass-card-inset));
   transform: translateY(-2px);
 }
