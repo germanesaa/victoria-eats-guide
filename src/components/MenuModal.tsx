@@ -39,7 +39,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 glass-strong rounded-2xl border-white/40 [&>button]:hidden">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 rounded-2xl border-border/40 bg-background/80 backdrop-blur-2xl [&>button]:hidden">
         {/* Restaurant Image Header */}
         <div className="relative h-48 w-full">
           <img 
@@ -92,7 +92,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
             
             <div className="space-y-4">
               {menuCategories.map((category, index) => (
-                <div key={index} className="glass-card rounded-xl p-4 flex items-center justify-between">
+                <div key={index} className="glass-card rounded-xl p-4 flex items-center justify-between bg-muted/40">
                   <div>
                     <h4 className="text-lg font-semibold text-foreground font-playfair mb-1">{category.name}</h4>
                     <p className="text-sm text-muted-foreground">{category.items.join(', ')}</p>
