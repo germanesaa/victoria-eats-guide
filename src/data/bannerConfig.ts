@@ -1,5 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
+export type BannerSize = "small" | "medium" | "large";
+
 export interface BannerConfig {
   id?: string;
   enabled: boolean;
@@ -9,6 +11,7 @@ export interface BannerConfig {
   linkText?: string;
   scheduleStart?: string | null;
   scheduleEnd?: string | null;
+  size: BannerSize;
 }
 
 const defaultBanner: BannerConfig = {
@@ -19,6 +22,7 @@ const defaultBanner: BannerConfig = {
   linkText: "",
   scheduleStart: null,
   scheduleEnd: null,
+  size: "medium",
 };
 
 export const getBannerConfig = async (): Promise<BannerConfig> => {
@@ -41,6 +45,7 @@ export const getBannerConfig = async (): Promise<BannerConfig> => {
       linkText: row.link_text || "",
       scheduleStart: row.schedule_start || null,
       scheduleEnd: row.schedule_end || null,
+      size: (row.size as BannerSize) || "medium",
     };
   } catch {
     return defaultBanner;
@@ -56,6 +61,7 @@ export const saveBannerConfig = async (config: BannerConfig): Promise<void> => {
     link_text: config.linkText || "",
     schedule_start: config.scheduleStart || null,
     schedule_end: config.scheduleEnd || null,
+    size: config.size || "medium",
     updated_at: new Date().toISOString(),
   };
 

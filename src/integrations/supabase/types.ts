@@ -24,6 +24,7 @@ export type Database = {
           link_url: string
           schedule_end: string | null
           schedule_start: string | null
+          size: string
           text: string
           updated_at: string
         }
@@ -36,6 +37,7 @@ export type Database = {
           link_url?: string
           schedule_end?: string | null
           schedule_start?: string | null
+          size?: string
           text?: string
           updated_at?: string
         }
@@ -48,6 +50,7 @@ export type Database = {
           link_url?: string
           schedule_end?: string | null
           schedule_start?: string | null
+          size?: string
           text?: string
           updated_at?: string
         }

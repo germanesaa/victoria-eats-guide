@@ -1,0 +1,1 @@
+ALTER TABLE public.banner_config ADD COLUMN size text NOT NULL DEFAULT 'medium';
