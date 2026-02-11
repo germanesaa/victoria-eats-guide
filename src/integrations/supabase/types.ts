@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      banner_config: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          image: string
+          link_text: string
+          link_url: string
+          schedule_end: string | null
+          schedule_start: string | null
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          image?: string
+          link_text?: string
+          link_url?: string
+          schedule_end?: string | null
+          schedule_start?: string | null
+          text?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          image?: string
+          link_text?: string
+          link_url?: string
+          schedule_end?: string | null
+          schedule_start?: string | null
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

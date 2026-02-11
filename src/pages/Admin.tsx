@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, Upload, X, Megaphone } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
 import { getBannerConfig, saveBannerConfig, BannerConfig } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
@@ -18,9 +17,21 @@ const Admin = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [bannerConfig, setBannerConfig] = useState<BannerConfig>(getBannerConfig());
+  const [bannerConfig, setBannerConfig] = useState<BannerConfig>({
+    enabled: false, text: "", image: "", linkUrl: "", linkText: "", scheduleStart: null, scheduleEnd: null,
+  });
   const [isBannerUploading, setIsBannerUploading] = useState(false);
   const { toast } = useToast();
+
+  // Load banner config from database
+  useEffect(() => {
+    getBannerConfig().then(setBannerConfig);
+  }, []);
+
+  const updateBanner = async (updated: BannerConfig) => {
+    setBannerConfig(updated);
+    await saveBannerConfig(updated);
+  };
 
   const emptyRestaurant: Omit<Restaurant, 'id'> = {
     name: "",
@@ -53,40 +64,24 @@ const Admin = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file
     const validation = validateImageFile(file);
     if (!validation.valid) {
-      toast({
-        title: "Error",
-        description: validation.error,
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: validation.error, variant: "destructive" });
       return;
     }
 
     setIsUploading(true);
-
     try {
       const imageUrl = await uploadImageToPublic(file);
-      
       if (isEditing) {
         setEditingRestaurant({ ...editingRestaurant, image: imageUrl });
       } else {
         setNewRestaurant({ ...newRestaurant, image: imageUrl });
       }
-
-      toast({
-        title: "Imagen cargada",
-        description: "La imagen ha sido cargada exitosamente.",
-      });
-
+      toast({ title: "Imagen cargada", description: "La imagen ha sido cargada exitosamente." });
     } catch (error: any) {
       console.error('Error uploading image:', error);
-      toast({
-        title: "Error al cargar imagen",
-        description: "Ocurrió un error al cargar la imagen.",
-        variant: "destructive",
-      });
+      toast({ title: "Error al cargar imagen", description: "Ocurrió un error al cargar la imagen.", variant: "destructive" });
     } finally {
       setIsUploading(false);
     }
@@ -99,58 +94,35 @@ const Admin = () => {
       setRestaurantList([...restaurantList, restaurantToAdd]);
       setNewRestaurant(emptyRestaurant);
       setIsAddingNew(false);
-      toast({
-        title: "Restaurante agregado",
-        description: "El restaurante ha sido agregado exitosamente.",
-      });
+      toast({ title: "Restaurante agregado", description: "El restaurante ha sido agregado exitosamente." });
     }
   };
 
   const handleEdit = (restaurant: Restaurant) => {
     setEditingId(restaurant.id);
     setEditingRestaurant({
-      name: restaurant.name,
-      category: restaurant.category,
-      image: restaurant.image,
-      hours: restaurant.hours,
-      detailedHours: restaurant.detailedHours,
-      location: restaurant.location,
-      phone: restaurant.phone,
-      menuUrl: restaurant.menuUrl || "",
-      description: restaurant.description || "",
-      isHot: restaurant.isHot || false,
-      priority: restaurant.priority
+      name: restaurant.name, category: restaurant.category, image: restaurant.image,
+      hours: restaurant.hours, detailedHours: restaurant.detailedHours, location: restaurant.location,
+      phone: restaurant.phone, menuUrl: restaurant.menuUrl || "", description: restaurant.description || "",
+      isHot: restaurant.isHot || false, priority: restaurant.priority
     });
   };
 
   const handleSaveEdit = () => {
     if (editingId) {
-      const updatedList = restaurantList.map(r => 
-        r.id === editingId 
-          ? { ...editingRestaurant, id: editingId }
-          : r
-      );
+      const updatedList = restaurantList.map(r => r.id === editingId ? { ...editingRestaurant, id: editingId } : r);
       setRestaurantList(updatedList);
       setEditingId(null);
       setEditingRestaurant(emptyRestaurant);
-      toast({
-        title: "Restaurante actualizado",
-        description: "El restaurante ha sido actualizado exitosamente.",
-      });
+      toast({ title: "Restaurante actualizado", description: "El restaurante ha sido actualizado exitosamente." });
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditingRestaurant(emptyRestaurant);
-  };
+  const handleCancelEdit = () => { setEditingId(null); setEditingRestaurant(emptyRestaurant); };
 
   const handleDelete = (id: number) => {
     setRestaurantList(restaurantList.filter(r => r.id !== id));
-    toast({
-      title: "Restaurante eliminado",
-      description: "El restaurante ha sido eliminado exitosamente.",
-    });
+    toast({ title: "Restaurante eliminado", description: "El restaurante ha sido eliminado exitosamente." });
   };
 
   const generateDataFile = () => {
@@ -216,7 +188,6 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
         </div>
       </div>
 
-      {/* Image Upload Section */}
       <div className="space-y-4">
         <Label>Imagen del Restaurante</Label>
         <div className="flex flex-col space-y-4">
@@ -361,14 +332,49 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                 checked={bannerConfig.enabled}
                 onCheckedChange={(checked) => {
                   const updated = { ...bannerConfig, enabled: checked };
-                  setBannerConfig(updated);
-                  saveBannerConfig(updated);
+                  updateBanner(updated);
                   toast({ title: checked ? "Banner activado" : "Banner desactivado" });
                 }}
               />
               <Label htmlFor="bannerEnabled" className="font-medium">
                 {bannerConfig.enabled ? "Banner activo" : "Banner desactivado"}
               </Label>
+            </div>
+
+            {/* Schedule */}
+            <div className="p-4 rounded-lg border bg-muted/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Clock className="w-4 h-4 text-muted-foreground" />
+                <Label className="font-medium">Programar horario (opcional)</Label>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Si configuras un horario, el banner solo se mostrará durante esas horas. Déjalo vacío para mostrarlo todo el día.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm">Hora inicio</Label>
+                  <Input
+                    type="time"
+                    value={bannerConfig.scheduleStart || ""}
+                    onChange={(e) => updateBanner({ ...bannerConfig, scheduleStart: e.target.value || null })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm">Hora fin</Label>
+                  <Input
+                    type="time"
+                    value={bannerConfig.scheduleEnd || ""}
+                    onChange={(e) => updateBanner({ ...bannerConfig, scheduleEnd: e.target.value || null })}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+              {bannerConfig.scheduleStart && bannerConfig.scheduleEnd && (
+                <p className="text-xs text-primary mt-2">
+                  ⏰ El banner se mostrará de {bannerConfig.scheduleStart} a {bannerConfig.scheduleEnd}
+                </p>
+              )}
             </div>
 
             <div>
@@ -389,9 +395,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                     setIsBannerUploading(true);
                     try {
                       const imageUrl = await uploadImageToPublic(file);
-                      const updated = { ...bannerConfig, image: imageUrl };
-                      setBannerConfig(updated);
-                      saveBannerConfig(updated);
+                      await updateBanner({ ...bannerConfig, image: imageUrl });
                       toast({ title: "Imagen del banner cargada" });
                     } catch {
                       toast({ title: "Error al cargar imagen", variant: "destructive" });
@@ -407,11 +411,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => {
-                      const updated = { ...bannerConfig, image: "" };
-                      setBannerConfig(updated);
-                      saveBannerConfig(updated);
-                    }}
+                    onClick={() => updateBanner({ ...bannerConfig, image: "" })}
                   >
                     <X className="w-4 h-4" /> Quitar
                   </Button>
@@ -423,11 +423,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
               <Label>Texto del banner</Label>
               <Textarea
                 value={bannerConfig.text}
-                onChange={(e) => {
-                  const updated = { ...bannerConfig, text: e.target.value };
-                  setBannerConfig(updated);
-                  saveBannerConfig(updated);
-                }}
+                onChange={(e) => updateBanner({ ...bannerConfig, text: e.target.value })}
                 placeholder="Ej: 🔥 ¡Promoción especial! 2x1 en pizzas este fin de semana"
                 className="mt-1"
               />
@@ -438,11 +434,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                 <Label>URL del enlace (opcional)</Label>
                 <Input
                   value={bannerConfig.linkUrl}
-                  onChange={(e) => {
-                    const updated = { ...bannerConfig, linkUrl: e.target.value };
-                    setBannerConfig(updated);
-                    saveBannerConfig(updated);
-                  }}
+                  onChange={(e) => updateBanner({ ...bannerConfig, linkUrl: e.target.value })}
                   placeholder="https://..."
                   className="mt-1"
                 />
@@ -451,11 +443,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                 <Label>Texto del botón (opcional)</Label>
                 <Input
                   value={bannerConfig.linkText}
-                  onChange={(e) => {
-                    const updated = { ...bannerConfig, linkText: e.target.value };
-                    setBannerConfig(updated);
-                    saveBannerConfig(updated);
-                  }}
+                  onChange={(e) => updateBanner({ ...bannerConfig, linkText: e.target.value })}
                   placeholder="Ver más"
                   className="mt-1"
                 />
