@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock, Maximize2 } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
-import { getBannerConfig, saveBannerConfig, BannerConfig } from "@/data/bannerConfig";
+import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
 
@@ -18,7 +18,7 @@ const Admin = () => {
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [bannerConfig, setBannerConfig] = useState<BannerConfig>({
-    enabled: false, text: "", image: "", linkUrl: "", linkText: "", scheduleStart: null, scheduleEnd: null,
+    enabled: false, text: "", image: "", linkUrl: "", linkText: "", scheduleStart: null, scheduleEnd: null, size: "medium",
   });
   const [isBannerUploading, setIsBannerUploading] = useState(false);
   const { toast } = useToast();
@@ -375,6 +375,34 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
                   ⏰ El banner se mostrará de {bannerConfig.scheduleStart} a {bannerConfig.scheduleEnd}
                 </p>
               )}
+            </div>
+
+            {/* Size */}
+            <div className="p-4 rounded-lg border bg-muted/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Maximize2 className="w-4 h-4 text-muted-foreground" />
+                <Label className="font-medium">Tamaño del banner</Label>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {([
+                  { value: "small" as BannerSize, label: "Pequeño (fijo)", desc: "Se mantiene visible al hacer scroll" },
+                  { value: "medium" as BannerSize, label: "Mediano", desc: "Tamaño estándar" },
+                  { value: "large" as BannerSize, label: "Grande", desc: "Máxima visibilidad" },
+                ]).map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => updateBanner({ ...bannerConfig, size: opt.value })}
+                    className={`p-3 rounded-lg border text-left transition-all ${
+                      bannerConfig.size === opt.value
+                        ? "border-primary bg-primary/10 ring-1 ring-primary"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <p className="text-sm font-medium">{opt.label}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{opt.desc}</p>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>
