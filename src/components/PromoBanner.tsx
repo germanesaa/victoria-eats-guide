@@ -1,23 +1,32 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
-import { getBannerConfig, BannerConfig } from "@/data/bannerConfig";
+import { getBannerConfig, isBannerInSchedule, BannerConfig } from "@/data/bannerConfig";
 
 const PromoBanner = () => {
   const [banner, setBanner] = useState<BannerConfig | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const config = getBannerConfig();
-    if (config.enabled && (config.text || config.image)) {
-      setBanner(config);
-    }
+    const fetchBanner = async () => {
+      const config = await getBannerConfig();
+      if (config.enabled && (config.text || config.image) && isBannerInSchedule(config)) {
+        setBanner(config);
+      } else {
+        setBanner(null);
+      }
+    };
+
+    fetchBanner();
+
+    // Re-check every minute for schedule changes
+    const interval = setInterval(fetchBanner, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   if (!banner || dismissed) return null;
 
   return (
     <div className="relative glass-card rounded-2xl overflow-hidden mx-4 mb-6">
-      {/* Dismiss button */}
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-background/60 backdrop-blur-sm text-foreground/70 hover:text-foreground hover:bg-background/80 transition-all"
