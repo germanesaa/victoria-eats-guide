@@ -11,6 +11,7 @@ import { restaurants, Restaurant } from "@/data/restaurants";
 import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
+import { isValidBannerUrl } from "@/utils/urlValidation";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 
@@ -150,6 +151,13 @@ const Admin = () => {
   }, []);
 
   const updateBanner = async (updated: BannerConfig) => {
+    if (updated.linkUrl) {
+      const validation = isValidBannerUrl(updated.linkUrl);
+      if (!validation.valid) {
+        toast({ title: "URL inválida", description: validation.error, variant: "destructive" });
+        return;
+      }
+    }
     setBannerConfig(updated);
     await saveBannerConfig(updated);
   };
