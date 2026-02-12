@@ -6,13 +6,134 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock, Maximize2 } from "lucide-react";
+import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock, Maximize2, LogOut } from "lucide-react";
 import { restaurants, Restaurant } from "@/data/restaurants";
 import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
+import { supabase } from "@/integrations/supabase/client";
+import type { Session } from "@supabase/supabase-js";
+
+const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+    if (authError) {
+      setError("Credenciales inválidas");
+      setLoading(false);
+      return;
+    }
+    onLogin();
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center">Acceso Administrador</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+            <div>
+              <Label htmlFor="password">Contraseña</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+            {error && <p className="text-sm text-red-600">{error}</p>}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Ingresando..." : "Ingresar"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
 
 const Admin = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        // Check admin role via database
+        supabase
+          .from("user_roles" as any)
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .then(({ data }) => {
+            setIsAdmin(Array.isArray(data) && data.length > 0);
+            setAuthLoading(false);
+          });
+      } else {
+        setIsAdmin(false);
+        setAuthLoading(false);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        supabase
+          .from("user_roles" as any)
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .then(({ data }) => {
+            setIsAdmin(Array.isArray(data) && data.length > 0);
+            setAuthLoading(false);
+          });
+      } else {
+        setAuthLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    setIsAdmin(false);
+  };
+
+  if (authLoading) {
+    return <div className="min-h-screen flex items-center justify-center"><p>Cargando...</p></div>;
+  }
+
+  if (!session) {
+    return <AdminLogin onLogin={() => {}} />;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6 text-center space-y-4">
+            <p className="text-lg font-medium">No tienes permisos de administrador</p>
+            <p className="text-sm text-muted-foreground">Contacta al administrador para obtener acceso.</p>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" /> Cerrar sesión
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -313,6 +434,10 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
             <Button onClick={generateDataFile} variant="outline">
               <Save className="w-4 h-4 mr-2" />
               Descargar Datos
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Salir
             </Button>
           </div>
         </div>
