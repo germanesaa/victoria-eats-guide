@@ -94,12 +94,14 @@ const Index = () => {
             </div>
           </div>
         </div>
+
+        {/* Promo Banner fixed below categories */}
+        <PromoBanner />
       </header>
 
       {/* Main Content */}
-      <main className="pt-32 pb-8">
+      <main className="pt-36 pb-8">
         <div className="container mx-auto px-4">
-          <PromoBanner />
           <div className="mb-6">
             <p className="text-muted-foreground text-center">
               {filteredRestaurants.length} restaurante{filteredRestaurants.length !== 1 ? 's' : ''} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
