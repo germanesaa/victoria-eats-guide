@@ -104,12 +104,47 @@ const Admin = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [isAddingNew, setIsAddingNew] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [bannerConfig, setBannerConfig] = useState<BannerConfig>({
+    enabled: false, text: "", image: "", linkUrl: "", linkText: "", scheduleStart: null, scheduleEnd: null, size: "medium",
+  });
+  const [isBannerUploading, setIsBannerUploading] = useState(false);
+  const { toast } = useToast();
+
+  const emptyRestaurant: Omit<Restaurant, 'id'> = {
+    name: "",
+    category: "",
+    image: "",
+    hours: "",
+    detailedHours: {
+      monday: { open: "09:00", close: "20:00" },
+      tuesday: { open: "09:00", close: "20:00" },
+      wednesday: { open: "09:00", close: "20:00" },
+      thursday: { open: "09:00", close: "20:00" },
+      friday: { open: "09:00", close: "20:00" },
+      saturday: { open: "09:00", close: "20:00" },
+      sunday: { open: "09:00", close: "20:00" }
+    },
+    location: "",
+    phone: "",
+    menuUrl: "",
+    description: "",
+    isHot: false,
+    priority: undefined
+  };
+
+  const [newRestaurant, setNewRestaurant] = useState(emptyRestaurant);
+  const [editingRestaurant, setEditingRestaurant] = useState(emptyRestaurant);
+
+  const categories = ["comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres", "café", "mariscos", "pollos"];
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session?.user) {
-        // Check admin role via database
         supabase
           .from("user_roles" as any)
           .select("role")
@@ -145,10 +180,27 @@ const Admin = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Load banner config from database
+  useEffect(() => {
+    getBannerConfig().then(setBannerConfig);
+  }, []);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setSession(null);
     setIsAdmin(false);
+  };
+
+  const updateBanner = async (updated: BannerConfig) => {
+    if (updated.linkUrl) {
+      const validation = isValidBannerUrl(updated.linkUrl);
+      if (!validation.valid) {
+        toast({ title: "URL inválida", description: validation.error, variant: "destructive" });
+        return;
+      }
+    }
+    setBannerConfig(updated);
+    await saveBannerConfig(updated);
   };
 
   if (authLoading) {
@@ -174,59 +226,6 @@ const Admin = () => {
       </div>
     );
   }
-  const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [isAddingNew, setIsAddingNew] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [bannerConfig, setBannerConfig] = useState<BannerConfig>({
-    enabled: false, text: "", image: "", linkUrl: "", linkText: "", scheduleStart: null, scheduleEnd: null, size: "medium",
-  });
-  const [isBannerUploading, setIsBannerUploading] = useState(false);
-  const { toast } = useToast();
-
-  // Load banner config from database
-  useEffect(() => {
-    getBannerConfig().then(setBannerConfig);
-  }, []);
-
-  const updateBanner = async (updated: BannerConfig) => {
-    if (updated.linkUrl) {
-      const validation = isValidBannerUrl(updated.linkUrl);
-      if (!validation.valid) {
-        toast({ title: "URL inválida", description: validation.error, variant: "destructive" });
-        return;
-      }
-    }
-    setBannerConfig(updated);
-    await saveBannerConfig(updated);
-  };
-
-  const emptyRestaurant: Omit<Restaurant, 'id'> = {
-    name: "",
-    category: "",
-    image: "",
-    hours: "",
-    detailedHours: {
-      monday: { open: "09:00", close: "20:00" },
-      tuesday: { open: "09:00", close: "20:00" },
-      wednesday: { open: "09:00", close: "20:00" },
-      thursday: { open: "09:00", close: "20:00" },
-      friday: { open: "09:00", close: "20:00" },
-      saturday: { open: "09:00", close: "20:00" },
-      sunday: { open: "09:00", close: "20:00" }
-    },
-    location: "",
-    phone: "",
-    menuUrl: "",
-    description: "",
-    isHot: false,
-    priority: undefined
-  };
-
-  const [newRestaurant, setNewRestaurant] = useState(emptyRestaurant);
-  const [editingRestaurant, setEditingRestaurant] = useState(emptyRestaurant);
-
-  const categories = ["comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres", "café", "mariscos", "pollos"];
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, isEditing = false) => {
     const file = event.target.files?.[0];
