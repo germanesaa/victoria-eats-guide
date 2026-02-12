@@ -57,8 +57,9 @@ const PromoBanner = () => {
             let safeUrl = '#';
             try {
               const parsed = new URL(banner.linkUrl);
-              if (['http:', 'https:'].includes(parsed.protocol)) {
-                safeUrl = banner.linkUrl;
+              const protocol = parsed.protocol.toLowerCase();
+              if (protocol === 'http:' || protocol === 'https:') {
+                safeUrl = parsed.href;
               }
             } catch { /* invalid URL, use # */ }
             return (
