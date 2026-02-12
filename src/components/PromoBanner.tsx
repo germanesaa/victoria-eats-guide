@@ -53,16 +53,25 @@ const PromoBanner = () => {
           <p className={`text-foreground font-medium leading-relaxed ${banner.size === "small" ? "text-xs sm:text-sm" : "text-sm sm:text-base"}`}>
             {banner.text}
           </p>
-          {banner.linkUrl && banner.linkText && (
-            <a
-              href={banner.linkUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`inline-block mt-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors ${banner.size === "small" ? "text-xs" : "text-sm"}`}
-            >
-              {banner.linkText}
-            </a>
-          )}
+          {banner.linkUrl && banner.linkText && (() => {
+            let safeUrl = '#';
+            try {
+              const parsed = new URL(banner.linkUrl);
+              if (['http:', 'https:'].includes(parsed.protocol)) {
+                safeUrl = banner.linkUrl;
+              }
+            } catch { /* invalid URL, use # */ }
+            return (
+              <a
+                href={safeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-block mt-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors ${banner.size === "small" ? "text-xs" : "text-sm"}`}
+              >
+                {banner.linkText}
+              </a>
+            );
+          })()}
         </div>
       )}
     </div>
