@@ -26,9 +26,15 @@ export const uploadImageToPublic = async (file: File): Promise<string> => {
 };
 
 export const validateImageFile = (file: File): { valid: boolean; error?: string } => {
-  // Check file type
-  if (!file.type.startsWith('image/')) {
-    return { valid: false, error: 'Por favor selecciona un archivo de imagen válido.' };
+  // Block SVG uploads to prevent XSS via embedded scripts
+  if (file.type === 'image/svg+xml') {
+    return { valid: false, error: 'Por razones de seguridad, no se permiten archivos SVG.' };
+  }
+
+  // Only allow safe image formats
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(file.type)) {
+    return { valid: false, error: 'Solo se permiten imágenes JPG, PNG, GIF o WebP.' };
   }
   
   // Check file size (max 5MB)
