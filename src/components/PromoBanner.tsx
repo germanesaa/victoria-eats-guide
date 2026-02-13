@@ -24,19 +24,25 @@ const PromoBanner = () => {
 
   if (!banner || dismissed) return null;
 
+  const sizeClasses: Record<BannerSize, string> = {
+    small: "py-1",
+    medium: "py-2",
+    large: "py-3",
+  };
+
   return (
-    <div className="relative glass-card rounded-2xl overflow-hidden mx-4 mb-4">
+    <div className={`relative glass-card overflow-hidden mx-4 mb-2 rounded-xl ${sizeClasses[banner.size]}`}>
       <button
         onClick={() => setDismissed(true)}
-        className="absolute top-1 right-1 z-10 p-1 rounded-full bg-background/60 backdrop-blur-sm text-foreground/70 hover:text-foreground hover:bg-background/80 transition-all"
+        className="absolute top-1 right-1 z-10 p-0.5 rounded-full bg-background/60 backdrop-blur-sm text-foreground/70 hover:text-foreground hover:bg-background/80 transition-all"
         aria-label="Cerrar banner"
       >
         <X className="w-3 h-3" />
       </button>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-center gap-2 px-6">
         {banner.image && (
-          <div className="w-16 h-12 sm:w-20 sm:h-14 flex-shrink-0 overflow-hidden rounded-l-2xl">
+          <div className="w-10 h-10 flex-shrink-0 overflow-hidden rounded-lg">
             <img
               src={banner.image}
               alt="Promoción"
@@ -46,8 +52,8 @@ const PromoBanner = () => {
         )}
 
         {banner.text && (
-          <div className="flex-1 py-2 pr-6">
-            <p className="text-foreground font-medium text-xs sm:text-sm leading-tight line-clamp-2">
+          <div className="text-center">
+            <p className="text-foreground font-medium text-xs sm:text-sm leading-tight line-clamp-1">
               {banner.text}
             </p>
             {banner.linkUrl && banner.linkText && (() => {
@@ -64,7 +70,7 @@ const PromoBanner = () => {
                   href={safeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-1 px-3 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors"
+                  className="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors"
                 >
                   {banner.linkText}
                 </a>
