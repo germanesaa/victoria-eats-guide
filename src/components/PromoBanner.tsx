@@ -24,14 +24,34 @@ const PromoBanner = () => {
 
   if (!banner || dismissed) return null;
 
-  const sizeClasses: Record<BannerSize, string> = {
-    small: "py-1",
-    medium: "py-2",
-    large: "py-3",
+  const sizeConfig: Record<BannerSize, { container: string; image: string; text: string; link: string; gap: string }> = {
+    small: {
+      container: "py-1.5 px-4",
+      image: "w-8 h-8",
+      text: "text-xs",
+      link: "text-[9px] px-2 py-0.5",
+      gap: "gap-2",
+    },
+    medium: {
+      container: "py-3 px-5",
+      image: "w-14 h-14",
+      text: "text-sm",
+      link: "text-xs px-3 py-1",
+      gap: "gap-3",
+    },
+    large: {
+      container: "py-4 px-6",
+      image: "w-20 h-20",
+      text: "text-base",
+      link: "text-sm px-4 py-1.5",
+      gap: "gap-4",
+    },
   };
 
+  const s = sizeConfig[banner.size];
+
   return (
-    <div className={`relative glass-card overflow-hidden mx-4 mb-2 rounded-xl ${sizeClasses[banner.size]}`}>
+    <div className={`relative glass-card overflow-hidden mx-4 mb-2 rounded-xl ${s.container}`}>
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-1 right-1 z-10 p-0.5 rounded-full bg-background/60 backdrop-blur-sm text-foreground/70 hover:text-foreground hover:bg-background/80 transition-all"
@@ -40,9 +60,9 @@ const PromoBanner = () => {
         <X className="w-3 h-3" />
       </button>
 
-      <div className="flex items-center justify-center gap-2 px-6">
+      <div className={`flex items-center justify-center ${s.gap}`}>
         {banner.image && (
-          <div className="w-10 h-10 flex-shrink-0 overflow-hidden rounded-lg">
+          <div className={`${s.image} flex-shrink-0 overflow-hidden rounded-lg`}>
             <img
               src={banner.image}
               alt="Promoción"
@@ -53,7 +73,7 @@ const PromoBanner = () => {
 
         {banner.text && (
           <div className="text-center">
-            <p className="text-foreground font-medium text-xs sm:text-sm leading-tight line-clamp-1">
+            <p className={`text-foreground font-medium ${s.text} leading-tight line-clamp-1`}>
               {banner.text}
             </p>
             {banner.linkUrl && banner.linkText && (() => {
@@ -70,7 +90,7 @@ const PromoBanner = () => {
                   href={safeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-medium shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors"
+                  className={`inline-block mt-0.5 ${s.link} rounded-full bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/25 hover:bg-primary/90 transition-colors`}
                 >
                   {banner.linkText}
                 </a>
