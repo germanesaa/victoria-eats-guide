@@ -95,9 +95,13 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Promo Banner fixed below categories */}
-        <PromoBanner />
+        {/* Promo Banner moved outside header */}
       </header>
+
+      {/* Floating Promo Banner - stays on screen like a popup */}
+      <div className="fixed bottom-4 left-4 right-4 z-50">
+        <PromoBanner />
+      </div>
 
       {/* Main Content */}
       <main className="pt-36 pb-8">
