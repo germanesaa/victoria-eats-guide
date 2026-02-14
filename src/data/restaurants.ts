@@ -2,6 +2,12 @@ export interface RestaurantHours {
   [key: string]: { open: string; close: string } | null;
 }
 
+export interface MenuCategory {
+  name: string;
+  items: string[];
+  price: string;
+}
+
 export interface Restaurant {
   id: number;
   name: string;
@@ -15,6 +21,7 @@ export interface Restaurant {
   description?: string;
   isHot?: boolean;
   priority?: number;
+  menuCategories?: MenuCategory[];
 }
 
 export const restaurants: Restaurant[] = [

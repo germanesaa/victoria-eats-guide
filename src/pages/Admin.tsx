@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock, Maximize2, LogOut } from "lucide-react";
-import { restaurants, Restaurant } from "@/data/restaurants";
+import { restaurants, Restaurant, MenuCategory } from "@/data/restaurants";
 import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
@@ -133,7 +133,8 @@ const Admin = () => {
     menuUrl: "",
     description: "",
     isHot: false,
-    priority: undefined
+    priority: undefined,
+    menuCategories: []
   };
 
   const [newRestaurant, setNewRestaurant] = useState(emptyRestaurant);
@@ -271,7 +272,8 @@ const Admin = () => {
       name: restaurant.name, category: restaurant.category, image: restaurant.image,
       hours: restaurant.hours, detailedHours: restaurant.detailedHours, location: restaurant.location,
       phone: restaurant.phone, menuUrl: restaurant.menuUrl || "", description: restaurant.description || "",
-      isHot: restaurant.isHot || false, priority: restaurant.priority
+      isHot: restaurant.isHot || false, priority: restaurant.priority,
+      menuCategories: restaurant.menuCategories || []
     });
   };
 
@@ -463,6 +465,87 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
           onChange={(e) => setRestaurant({...restaurant, description: e.target.value})}
           placeholder="Descripción del restaurante"
         />
+      </div>
+
+      {/* Menu Categories Editor */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-base font-semibold">Categorías del Menú</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const cats = [...(restaurant.menuCategories || []), { name: "", items: [""], price: "" }];
+              setRestaurant({ ...restaurant, menuCategories: cats });
+            }}
+          >
+            <Plus className="w-4 h-4 mr-1" /> Agregar categoría
+          </Button>
+        </div>
+        {(restaurant.menuCategories || []).map((cat: MenuCategory, catIdx: number) => (
+          <div key={catIdx} className="border rounded-lg p-4 space-y-3 bg-muted/20">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">Categoría {catIdx + 1}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const cats = (restaurant.menuCategories || []).filter((_: MenuCategory, i: number) => i !== catIdx);
+                  setRestaurant({ ...restaurant, menuCategories: cats });
+                }}
+                className="text-red-600 hover:text-red-700 h-7"
+              >
+                <Trash2 className="w-3 h-3" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Nombre</Label>
+                <Input
+                  value={cat.name}
+                  onChange={(e) => {
+                    const cats = [...(restaurant.menuCategories || [])];
+                    cats[catIdx] = { ...cats[catIdx], name: e.target.value };
+                    setRestaurant({ ...restaurant, menuCategories: cats });
+                  }}
+                  placeholder="Ej: Hamburguesas"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Precio</Label>
+                <Input
+                  value={cat.price}
+                  onChange={(e) => {
+                    const cats = [...(restaurant.menuCategories || [])];
+                    cats[catIdx] = { ...cats[catIdx], price: e.target.value };
+                    setRestaurant({ ...restaurant, menuCategories: cats });
+                  }}
+                  placeholder="Ej: $8 - $15"
+                  className="h-8 text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs">Items (separados por coma)</Label>
+              <Input
+                value={cat.items.join(", ")}
+                onChange={(e) => {
+                  const cats = [...(restaurant.menuCategories || [])];
+                  cats[catIdx] = { ...cats[catIdx], items: e.target.value.split(",").map((s: string) => s.trim()) };
+                  setRestaurant({ ...restaurant, menuCategories: cats });
+                }}
+                placeholder="Ej: Clásica, Especial, Doble Carne"
+                className="h-8 text-sm"
+              />
+            </div>
+          </div>
+        ))}
+        {(!restaurant.menuCategories || restaurant.menuCategories.length === 0) && (
+          <p className="text-xs text-muted-foreground">Sin categorías de menú. Se mostrarán valores por defecto.</p>
+        )}
       </div>
     </div>
   );
