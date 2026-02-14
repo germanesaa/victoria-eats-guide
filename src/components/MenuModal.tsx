@@ -4,6 +4,12 @@ import { Clock, MapPin, Phone, Utensils, ExternalLink, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
+interface MenuCategory {
+  name: string;
+  items: string[];
+  price: string;
+}
+
 interface Restaurant {
   id: number;
   name: string;
@@ -14,6 +20,7 @@ interface Restaurant {
   phone: string;
   menuUrl?: string;
   description?: string;
+  menuCategories?: MenuCategory[];
 }
 
 interface MenuModalProps {
@@ -25,11 +32,13 @@ interface MenuModalProps {
 const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
   if (!restaurant) return null;
 
-  const menuCategories = [
-    { name: "Hamburguesas", items: ["Clásica", "Especial", "Doble Carne"], price: "$8 - $15" },
-    { name: "Pizzas", items: ["Margherita", "Pepperoni", "Hawaiana"], price: "$12 - $20" },
-    { name: "Bebidas", items: ["Jugos naturales", "Sodas", "Agua"], price: "$1 - $4" }
-  ];
+  const menuCategories = restaurant.menuCategories && restaurant.menuCategories.length > 0
+    ? restaurant.menuCategories
+    : [
+        { name: "Hamburguesas", items: ["Clásica", "Especial", "Doble Carne"], price: "$8 - $15" },
+        { name: "Pizzas", items: ["Margherita", "Pepperoni", "Hawaiana"], price: "$12 - $20" },
+        { name: "Bebidas", items: ["Jugos naturales", "Sodas", "Agua"], price: "$1 - $4" }
+      ];
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(`Hola! Me interesa información sobre ${restaurant.name}`);
