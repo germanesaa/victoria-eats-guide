@@ -52,18 +52,18 @@ const Index = () => {
     });
 
   const handleBusinessWhatsApp = () => {
-    const message = encodeURIComponent("Hola! Soy una empresa interesada en aparecer en Victoria Eats");
+    const message = encodeURIComponent("Hola! Soy una empresa interesada en aparecer en QuéComer");
     const whatsappUrl = `https://wa.me/1234567890?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-100/60 via-sky-50/40 to-violet-100/50 dark:from-emerald-950/60 dark:via-sky-950/40 dark:to-violet-950/50 relative">
+    <div className="min-h-screen bg-gradient-to-br from-orange-100/70 via-amber-50/50 to-rose-100/50 dark:from-orange-950/60 dark:via-amber-950/40 dark:to-rose-950/50 relative">
       {/* Ambient blurred blobs for liquid feel */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-emerald-300/30 dark:bg-emerald-700/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-0 w-80 h-80 bg-sky-300/20 dark:bg-sky-700/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-violet-300/20 dark:bg-violet-700/15 rounded-full blur-3xl" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-orange-300/40 dark:bg-orange-700/25 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-0 w-80 h-80 bg-amber-300/30 dark:bg-amber-700/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-rose-300/25 dark:bg-rose-700/20 rounded-full blur-3xl" />
       </div>
 
       {/* Fixed Search Header */}
@@ -132,12 +132,12 @@ const Index = () => {
       <footer className="glass-strong border-t border-border/40">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center">
-            <p className="text-sm font-semibold text-foreground mb-1">Victoria Eats</p>
+            <p className="text-sm font-semibold text-foreground mb-1">QuéComer</p>
             <p className="text-muted-foreground text-xs">&copy; 2025 Guía Gastronómica La Victoria</p>
             <p className="text-muted-foreground text-xs mt-1">Descubre los mejores sabores de tu ciudad</p>
             
             <div className="mt-4 pt-3 border-t border-border/30">
-              <p className="text-muted-foreground text-xs mb-2">¿Eres empresa? Únete a Victoria Eats</p>
+              <p className="text-muted-foreground text-xs mb-2">¿Eres empresa? Únete a QuéComer</p>
               <button
                 onClick={handleBusinessWhatsApp}
                 className="inline-flex items-center gap-1 bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-medium transition-colors shadow-lg shadow-primary/20"
