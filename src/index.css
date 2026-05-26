@@ -13,7 +13,7 @@
     --card-foreground: 220 15% 20%;
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 20%;
-    --primary: 22 95% 55%;
+    --primary: 25 85% 65%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 92%;
     --secondary-foreground: 220 15% 30%;
@@ -25,7 +25,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 90%;
     --input: 220 13% 90%;
-    --ring: 22 95% 55%;
+    --ring: 25 85% 65%;
     --radius: 1rem;
 
     /* Liquid glass tokens */
@@ -47,7 +47,7 @@
     --card-foreground: 220 15% 90%;
     --popover: 220 20% 14%;
     --popover-foreground: 220 15% 90%;
-    --primary: 22 95% 55%;
+    --primary: 25 85% 65%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 18%;
     --secondary-foreground: 220 15% 80%;
@@ -59,7 +59,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 20%;
     --input: 220 13% 20%;
-    --ring: 22 95% 55%;
+    --ring: 25 85% 65%;
 
     /* Dark mode glass tokens */
     --glass-bg: 0 0% 100% / 0.06;
