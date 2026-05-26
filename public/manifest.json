@@ -1,21 +1,21 @@
 
 {
-  "name": "Victoria Eats - Guía Gastronómica",
-  "short_name": "Victoria Eats",
+  "name": "QuéComer - Guía Gastronómica",
+  "short_name": "QuéComer",
   "description": "Descubre los mejores restaurantes de La Victoria",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#10B981",
+  "theme_color": "#F97316",
   "background_color": "#ffffff",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/lovable-uploads/97e26ff5-dfa8-4f41-ace9-908caced1a64.png",
+      "src": "/quecomer-logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/lovable-uploads/97e26ff5-dfa8-4f41-ace9-908caced1a64.png",
+      "src": "/quecomer-logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -52,7 +52,7 @@ const Index = () => {
     });
 
   const handleBusinessWhatsApp = () => {
-    const message = encodeURIComponent("Hola! Soy una empresa interesada en aparecer en Victoria Eats");
+    const message = encodeURIComponent("Hola! Soy una empresa interesada en aparecer en QuéComer");
     const whatsappUrl = `https://wa.me/1234567890?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -132,12 +132,12 @@ const Index = () => {
       <footer className="glass-strong border-t border-border/40">
         <div className="container mx-auto px-4 py-6">
           <div className="text-center">
-            <p className="text-sm font-semibold text-foreground mb-1">Victoria Eats</p>
+            <p className="text-sm font-semibold text-foreground mb-1">QuéComer</p>
             <p className="text-muted-foreground text-xs">&copy; 2025 Guía Gastronómica La Victoria</p>
             <p className="text-muted-foreground text-xs mt-1">Descubre los mejores sabores de tu ciudad</p>
             
             <div className="mt-4 pt-3 border-t border-border/30">
-              <p className="text-muted-foreground text-xs mb-2">¿Eres empresa? Únete a Victoria Eats</p>
+              <p className="text-muted-foreground text-xs mb-2">¿Eres empresa? Únete a QuéComer</p>
               <button
                 onClick={handleBusinessWhatsApp}
                 className="inline-flex items-center gap-1 bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-medium transition-colors shadow-lg shadow-primary/20"
