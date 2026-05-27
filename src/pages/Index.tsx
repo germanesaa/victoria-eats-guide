@@ -10,8 +10,16 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [showAllCategories, setShowAllCategories] = useState(false);
 
-  const categories = ["all", "comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres"];
+  // Derive categories from actual restaurant data so nothing is missed
+  const dataCategories = Array.from(
+    new Set(restaurants.map(r => r.category.toLowerCase()))
+  ).sort();
+  const categories = ["all", ...dataCategories];
+  const VISIBLE_COUNT = 6;
+  const visibleCategories = showAllCategories ? categories : categories.slice(0, VISIBLE_COUNT);
+  const hasMoreCategories = categories.length > VISIBLE_COUNT;
 
   const restaurantsWithStatus = useRestaurantStatus(restaurants);
 
@@ -78,7 +86,7 @@ const Index = () => {
         <div className="glass border-t-0" style={{ borderTop: 'none' }}>
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-2 px-4 py-3 min-w-max">
-              {categories.map(category => (
+              {visibleCategories.map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -91,6 +99,14 @@ const Index = () => {
                   {category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1)}
                 </button>
               ))}
+              {hasMoreCategories && (
+                <button
+                  onClick={() => setShowAllCategories(v => !v)}
+                  className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 glass-card text-foreground/70 hover:text-foreground"
+                >
+                  {showAllCategories ? "Ver menos" : "Ver más"}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -114,7 +130,15 @@ const Index = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredRestaurants.map(restaurant => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+              <RestaurantCard
+                key={restaurant.id}
+                restaurant={restaurant}
+                onCategoryClick={(cat) => {
+                  setSelectedCategory(cat.toLowerCase());
+                  setShowAllCategories(true);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
             ))}
           </div>
 
