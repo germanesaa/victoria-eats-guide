@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -139,6 +139,8 @@ const Admin = () => {
 
   const [newRestaurant, setNewRestaurant] = useState(emptyRestaurant);
   const [editingRestaurant, setEditingRestaurant] = useState(emptyRestaurant);
+  const newFileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const categories = ["comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres", "café", "mariscos", "pollos"];
 
@@ -362,6 +364,7 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
         <div className="flex flex-col space-y-4">
           <div className="flex items-center space-x-4">
             <Input
+              ref={isEditing ? editFileInputRef : newFileInputRef}
               type="file"
               accept="image/*"
               onChange={(e) => handleImageUpload(e, isEditing)}
@@ -374,8 +377,8 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
               disabled={isUploading}
               className="flex items-center gap-2"
               onClick={() => {
-                const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-                fileInput?.click();
+                const ref = isEditing ? editFileInputRef : newFileInputRef;
+                ref.current?.click();
               }}
             >
               {isUploading ? (

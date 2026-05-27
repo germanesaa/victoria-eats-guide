@@ -24,6 +24,7 @@ interface Restaurant {
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
+  onCategoryClick?: (category: string) => void;
 }
 
 const getStatusColor = (status: RestaurantStatus) => {
@@ -52,7 +53,7 @@ const getStatusText = (status: RestaurantStatus, opensIn?: string) => {
   }
 };
 
-const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
+const RestaurantCard = ({ restaurant, onCategoryClick }: RestaurantCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -65,11 +66,19 @@ const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" 
           />
           <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
-            <div className="bg-foreground/50 backdrop-blur-md rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20">
-              <span className="text-white text-xs font-medium text-center">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCategoryClick?.(restaurant.category);
+              }}
+              className="bg-foreground/50 backdrop-blur-md rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20 hover:bg-primary/80 transition-colors cursor-pointer"
+              aria-label={`Filtrar por ${restaurant.category}`}
+            >
+              <span className="text-white text-xs font-medium text-center capitalize">
                 {restaurant.category}
               </span>
-            </div>
+            </button>
             {restaurant.status && (
               <div className={`${getStatusColor(restaurant.status)} rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20`}>
                 <span className="text-xs font-medium text-center">
