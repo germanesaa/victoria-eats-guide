@@ -540,10 +540,6 @@ const Admin = () => {
               <Plus className="w-4 h-4 mr-2" />
               Agregar Restaurante
             </Button>
-            <Button onClick={generateDataFile} variant="outline">
-              <Save className="w-4 h-4 mr-2" />
-              Descargar Datos
-            </Button>
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
               Salir
