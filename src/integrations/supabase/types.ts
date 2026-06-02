@@ -56,6 +56,60 @@ export type Database = {
         }
         Relationships: []
       }
+      restaurants: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          detailed_hours: Json
+          hours: string
+          id: string
+          image: string
+          is_hot: boolean
+          location: string
+          menu_categories: Json
+          menu_url: string | null
+          name: string
+          phone: string
+          priority: number | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          detailed_hours?: Json
+          hours?: string
+          id?: string
+          image?: string
+          is_hot?: boolean
+          location?: string
+          menu_categories?: Json
+          menu_url?: string | null
+          name: string
+          phone?: string
+          priority?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          detailed_hours?: Json
+          hours?: string
+          id?: string
+          image?: string
+          is_hot?: boolean
+          location?: string
+          menu_categories?: Json
+          menu_url?: string | null
+          name?: string
+          phone?: string
+          priority?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

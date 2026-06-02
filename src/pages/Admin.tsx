@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, Upload, X, Megaphone, Clock, Maximize2, LogOut } from "lucide-react";
-import { restaurants, Restaurant, MenuCategory } from "@/data/restaurants";
+import { Plus, Edit, Trash2, Upload, X, Megaphone, Clock, Maximize2, LogOut } from "lucide-react";
+import { Restaurant, MenuCategory } from "@/data/restaurants";
+import { useRestaurants } from "@/hooks/useRestaurants";
 import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
@@ -104,8 +105,8 @@ const Admin = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [restaurantList, setRestaurantList] = useState<Restaurant[]>(restaurants);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const { restaurants: restaurantList, createRestaurant, updateRestaurant, deleteRestaurant } = useRestaurants();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [bannerConfig, setBannerConfig] = useState<BannerConfig>({
@@ -257,14 +258,19 @@ const Admin = () => {
     }
   };
 
-  const handleSave = () => {
-    if (isAddingNew) {
-      const newId = Math.max(...restaurantList.map(r => r.id)) + 1;
-      const restaurantToAdd = { ...newRestaurant, id: newId };
-      setRestaurantList([...restaurantList, restaurantToAdd]);
+  const handleSave = async () => {
+    if (!isAddingNew) return;
+    if (!newRestaurant.name || !newRestaurant.category) {
+      toast({ title: "Campos requeridos", description: "Nombre y categoría son obligatorios.", variant: "destructive" });
+      return;
+    }
+    try {
+      await createRestaurant(newRestaurant);
       setNewRestaurant(emptyRestaurant);
       setIsAddingNew(false);
-      toast({ title: "Restaurante agregado", description: "El restaurante ha sido agregado exitosamente." });
+      toast({ title: "Restaurante agregado", description: "El restaurante ha sido guardado en la base de datos." });
+    } catch (e: any) {
+      toast({ title: "Error al guardar", description: e?.message || "No se pudo guardar el restaurante.", variant: "destructive" });
     }
   };
 
@@ -279,57 +285,28 @@ const Admin = () => {
     });
   };
 
-  const handleSaveEdit = () => {
-    if (editingId) {
-      const updatedList = restaurantList.map(r => r.id === editingId ? { ...editingRestaurant, id: editingId } : r);
-      setRestaurantList(updatedList);
+  const handleSaveEdit = async () => {
+    if (!editingId) return;
+    try {
+      await updateRestaurant(editingId, editingRestaurant);
       setEditingId(null);
       setEditingRestaurant(emptyRestaurant);
-      toast({ title: "Restaurante actualizado", description: "El restaurante ha sido actualizado exitosamente." });
+      toast({ title: "Restaurante actualizado", description: "Cambios guardados en la base de datos." });
+    } catch (e: any) {
+      toast({ title: "Error al actualizar", description: e?.message || "No se pudo actualizar.", variant: "destructive" });
     }
   };
 
   const handleCancelEdit = () => { setEditingId(null); setEditingRestaurant(emptyRestaurant); };
 
-  const handleDelete = (id: number) => {
-    setRestaurantList(restaurantList.filter(r => r.id !== id));
-    toast({ title: "Restaurante eliminado", description: "El restaurante ha sido eliminado exitosamente." });
-  };
-
-  const generateDataFile = () => {
-    const dataContent = `export interface RestaurantHours {
-  [key: string]: { open: string; close: string } | null;
-}
-
-export interface Restaurant {
-  id: number;
-  name: string;
-  category: string;
-  image: string;
-  hours: string;
-  detailedHours: RestaurantHours;
-  location: string;
-  phone: string;
-  menuUrl?: string;
-  description?: string;
-  isHot?: boolean;
-  priority?: number;
-}
-
-export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 2)};`;
-
-    const blob = new Blob([dataContent], { type: 'text/typescript' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'restaurants.ts';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    toast({
-      title: "Archivo generado",
-      description: "El archivo restaurants.ts ha sido descargado. Reemplaza el archivo en src/data/restaurants.ts",
-    });
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Eliminar este restaurante?")) return;
+    try {
+      await deleteRestaurant(id);
+      toast({ title: "Restaurante eliminado" });
+    } catch (e: any) {
+      toast({ title: "Error al eliminar", description: e?.message || "No se pudo eliminar.", variant: "destructive" });
+    }
   };
 
   const renderRestaurantForm = (restaurant: any, setRestaurant: any, isEditing = false) => (
@@ -562,10 +539,6 @@ export const restaurants: Restaurant[] = ${JSON.stringify(restaurantList, null, 
             <Button onClick={() => setIsAddingNew(true)} className="bg-green-600 hover:bg-green-700">
               <Plus className="w-4 h-4 mr-2" />
               Agregar Restaurante
-            </Button>
-            <Button onClick={generateDataFile} variant="outline">
-              <Save className="w-4 h-4 mr-2" />
-              Descargar Datos
             </Button>
             <Button variant="outline" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
