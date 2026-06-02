@@ -1,25 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import PromoBanner from "@/components/PromoBanner";
-import { restaurants } from "@/data/restaurants";
-import { useRestaurantStatus } from "@/hooks/useRestaurantStatus";
+import { useRestaurants } from "@/hooks/useRestaurants";
+import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState<RestaurantStatus | "all">("all");
   const [headerVisible, setHeaderVisible] = useState(true);
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+
+  const { restaurants } = useRestaurants();
 
   // Derive categories from actual restaurant data so nothing is missed
-  const dataCategories = Array.from(
-    new Set(restaurants.map(r => r.category.toLowerCase()))
+  const dataCategories: string[] = Array.from(
+    new Set(restaurants.map((r) => r.category.toLowerCase()))
   ).sort();
-  const categories = ["all", ...dataCategories];
+  const categories: string[] = ["all", ...dataCategories];
   const VISIBLE_COUNT = 6;
-  const visibleCategories = showAllCategories ? categories : categories.slice(0, VISIBLE_COUNT);
-  const hasMoreCategories = categories.length > VISIBLE_COUNT;
+  const visibleCategories = categories.slice(0, VISIBLE_COUNT);
+  const hiddenCategories = categories.slice(VISIBLE_COUNT);
+  const hasMoreCategories = hiddenCategories.length > 0;
 
   const restaurantsWithStatus = useRestaurantStatus(restaurants);
 
@@ -49,14 +54,26 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close "ver más" dropdown when clicking outside
+  useEffect(() => {
+    if (!showAllCategories) return;
+    const handleClick = (e: MouseEvent) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+        setShowAllCategories(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showAllCategories]);
+
   const filteredRestaurants = restaurantsWithStatus
-    .filter(restaurant => restaurant.id !== 1)
     .filter(restaurant => {
       const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                            restaurant.category.toLowerCase().includes(searchTerm.toLowerCase()) || 
                            restaurant.location.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === "all" || restaurant.category.toLowerCase() === selectedCategory;
-      return matchesSearch && matchesCategory;
+      const matchesStatus = selectedStatus === "all" || restaurant.status === selectedStatus;
+      return matchesSearch && matchesCategory && matchesStatus;
     });
 
   const handleBusinessWhatsApp = () => {
@@ -84,8 +101,8 @@ const Index = () => {
         
         {/* Horizontal Scrolling Categories */}
         <div className="glass border-t-0" style={{ borderTop: 'none' }}>
-          <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-2 px-4 py-3 min-w-max">
+          <div className="overflow-x-auto scrollbar-hide relative">
+            <div className="flex gap-2 px-4 py-3 min-w-max items-center">
               {visibleCategories.map(category => (
                 <button
                   key={category}
@@ -100,16 +117,56 @@ const Index = () => {
                 </button>
               ))}
               {hasMoreCategories && (
-                <button
-                  onClick={() => setShowAllCategories(v => !v)}
-                  className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 glass-card text-foreground/70 hover:text-foreground"
-                >
-                  {showAllCategories ? "Ver menos" : "Ver más"}
-                </button>
+                <div className="relative flex-shrink-0" ref={moreMenuRef}>
+                  <button
+                    onClick={() => setShowAllCategories(v => !v)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                      hiddenCategories.includes(selectedCategory)
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                        : "glass-card text-foreground/70 hover:text-foreground"
+                    }`}
+                  >
+                    {showAllCategories ? "Cerrar" : "Ver más"}
+                  </button>
+                  {showAllCategories && (
+                    <div className="absolute right-0 top-full mt-2 z-50 min-w-[180px] max-h-[60vh] overflow-y-auto glass-strong rounded-2xl border border-border/40 shadow-xl p-2 flex flex-col gap-1">
+                      {hiddenCategories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => {
+                            setSelectedCategory(category);
+                            setShowAllCategories(false);
+                          }}
+                          className={`px-3 py-2 rounded-xl text-sm font-medium text-left transition-all ${
+                            selectedCategory === category
+                              ? "bg-primary text-primary-foreground"
+                              : "text-foreground/80 hover:bg-primary/10"
+                          }`}
+                        >
+                          {category.charAt(0).toUpperCase() + category.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>
         </div>
+
+        {/* Status filter chips */}
+        {selectedStatus !== "all" && (
+          <div className="glass border-t-0 px-4 py-2 flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Filtrando por estado:</span>
+            <button
+              onClick={() => setSelectedStatus("all")}
+              className="px-3 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground flex items-center gap-1"
+            >
+              {selectedStatus === "open" ? "Abierto" : selectedStatus === "closed" ? "Cerrado" : "Abre pronto"}
+              <span aria-hidden>×</span>
+            </button>
+          </div>
+        )}
 
         {/* Promo Banner moved outside header */}
       </header>
@@ -135,7 +192,10 @@ const Index = () => {
                 restaurant={restaurant}
                 onCategoryClick={(cat) => {
                   setSelectedCategory(cat.toLowerCase());
-                  setShowAllCategories(true);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                onStatusClick={(status) => {
+                  setSelectedStatus(status);
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
               />
