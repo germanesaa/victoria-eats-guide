@@ -3,16 +3,14 @@ import { writeFileSync } from 'fs';
 const esc = (s: string) => s.replace(/'/g, "''");
 const lines = ["DELETE FROM public.restaurants;"];
 for (const r of restaurants) {
+  // Strip giant base64 images; admin can re-upload
+  const image = (r.image || '').startsWith('data:') && r.image.length > 5000 ? '' : (r.image || '');
   const vals = [
-    `'${esc(r.name)}'`,
-    `'${esc(r.category)}'`,
-    `'${esc(r.image || '')}'`,
+    `'${esc(r.name)}'`, `'${esc(r.category)}'`, `'${esc(image)}'`,
     `'${esc(r.hours || '')}'`,
     `'${esc(JSON.stringify(r.detailedHours || {}))}'::jsonb`,
-    `'${esc(r.location || '')}'`,
-    `'${esc(r.phone || '')}'`,
-    `'${esc(r.menuUrl || '')}'`,
-    `'${esc(r.description || '')}'`,
+    `'${esc(r.location || '')}'`, `'${esc(r.phone || '')}'`,
+    `'${esc(r.menuUrl || '')}'`, `'${esc(r.description || '')}'`,
     r.isHot ? 'true' : 'false',
     r.priority != null ? String(r.priority) : 'NULL',
     `'${esc(JSON.stringify(r.menuCategories || []))}'::jsonb`,
