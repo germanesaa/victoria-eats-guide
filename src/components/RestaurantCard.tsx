@@ -7,7 +7,7 @@ import { useState } from "react";
 import { RestaurantStatus } from "@/hooks/useRestaurantStatus";
 
 interface Restaurant {
-  id: number;
+  id: string;
   name: string;
   category: string;
   image: string;
@@ -25,6 +25,7 @@ interface Restaurant {
 interface RestaurantCardProps {
   restaurant: Restaurant;
   onCategoryClick?: (category: string) => void;
+  onStatusClick?: (status: RestaurantStatus) => void;
 }
 
 const getStatusColor = (status: RestaurantStatus) => {
@@ -53,7 +54,7 @@ const getStatusText = (status: RestaurantStatus, opensIn?: string) => {
   }
 };
 
-const RestaurantCard = ({ restaurant, onCategoryClick }: RestaurantCardProps) => {
+const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: RestaurantCardProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -80,11 +81,19 @@ const RestaurantCard = ({ restaurant, onCategoryClick }: RestaurantCardProps) =>
               </span>
             </button>
             {restaurant.status && (
-              <div className={`${getStatusColor(restaurant.status)} rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20`}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (restaurant.status) onStatusClick?.(restaurant.status);
+                }}
+                className={`${getStatusColor(restaurant.status)} rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20 hover:brightness-110 transition cursor-pointer`}
+                aria-label={`Filtrar por estado ${restaurant.status}`}
+              >
                 <span className="text-xs font-medium text-center">
                   {getStatusText(restaurant.status, restaurant.opensIn)}
                 </span>
-              </div>
+              </button>
             )}
           </div>
           {restaurant.isHot && (
