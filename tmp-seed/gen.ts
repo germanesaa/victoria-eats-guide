@@ -1,10 +1,10 @@
 import { restaurants } from '../src/data/restaurants';
 import { writeFileSync } from 'fs';
 const esc = (s: string) => s.replace(/'/g, "''");
-const lines = ["DELETE FROM public.restaurants;"];
+const lines: string[] = [];
 for (const r of restaurants) {
-  // Strip giant base64 images; admin can re-upload
-  const image = (r.image || '').startsWith('data:') && r.image.length > 5000 ? '' : (r.image || '');
+  // Drop ALL base64 images; admin can re-upload
+  const image = (r.image || '').startsWith('data:') ? '' : (r.image || '');
   const vals = [
     `'${esc(r.name)}'`, `'${esc(r.category)}'`, `'${esc(image)}'`,
     `'${esc(r.hours || '')}'`,
