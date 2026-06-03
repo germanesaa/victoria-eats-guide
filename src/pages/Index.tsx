@@ -5,6 +5,7 @@ import PromoBanner from "@/components/PromoBanner";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
+import foodPatternBg from "@/assets/food-pattern-bg.png.asset.json";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -83,12 +84,23 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100/70 via-emerald-50/50 to-lime-100/50 dark:from-green-950/60 dark:via-emerald-950/40 dark:to-lime-950/50 relative">
+    <div className="min-h-screen relative">
+      {/* WhatsApp-style tiled food pattern background */}
+      <div
+        className="fixed inset-0 -z-20 pointer-events-none"
+        style={{
+          backgroundImage: `url(${foodPatternBg.url})`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "420px auto",
+        }}
+      />
+      {/* Soft green tint overlay for brand cohesion */}
+      <div className="fixed inset-0 -z-10 pointer-events-none bg-gradient-to-br from-green-100/40 via-emerald-50/30 to-lime-100/30 dark:from-green-950/70 dark:via-emerald-950/60 dark:to-lime-950/70" />
       {/* Ambient blurred blobs for liquid feel */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-green-300/40 dark:bg-green-700/25 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-0 w-80 h-80 bg-emerald-300/30 dark:bg-emerald-700/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-lime-300/25 dark:bg-lime-700/20 rounded-full blur-3xl" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-green-300/30 dark:bg-green-700/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-0 w-80 h-80 bg-emerald-300/25 dark:bg-emerald-700/15 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-lime-300/20 dark:bg-lime-700/15 rounded-full blur-3xl" />
       </div>
 
       {/* Fixed Search Header */}
