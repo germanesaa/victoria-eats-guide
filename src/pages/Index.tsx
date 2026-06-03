@@ -107,7 +107,7 @@ const Index = () => {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
+                  className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
                     selectedCategory === category 
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25" 
                       : "glass-card text-foreground/70 hover:text-foreground"
@@ -120,7 +120,7 @@ const Index = () => {
                 <div className="relative flex-shrink-0" ref={moreMenuRef}>
                   <button
                     onClick={() => setShowAllCategories(v => !v)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
+                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-300 ${
                       hiddenCategories.includes(selectedCategory)
                         ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                         : "glass-card text-foreground/70 hover:text-foreground"
