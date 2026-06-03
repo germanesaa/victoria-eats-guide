@@ -1,7 +1,6 @@
 
-import { Clock, MapPin, Star, Flame, Menu as MenuIcon } from "lucide-react";
+import { Clock, MapPin, Star, Flame } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import WhatsAppButton from "./WhatsAppButton";
 import MenuModal from "./MenuModal";
 import { useState } from "react";
 import { RestaurantStatus } from "@/hooks/useRestaurantStatus";
