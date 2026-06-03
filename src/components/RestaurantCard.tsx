@@ -1,5 +1,5 @@
 
-import { Clock, MapPin, Star, Flame } from "lucide-react";
+import { Clock, MapPin, Star, Flame, Menu as MenuIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import WhatsAppButton from "./WhatsAppButton";
 import MenuModal from "./MenuModal";
@@ -31,13 +31,13 @@ interface RestaurantCardProps {
 const getStatusColor = (status: RestaurantStatus) => {
   switch (status) {
     case 'open':
-      return 'bg-emerald-500/80 text-white backdrop-blur-sm';
+      return 'bg-emerald-500/90 text-white';
     case 'opening-soon':
-      return 'bg-amber-400/80 text-white backdrop-blur-sm';
+      return 'bg-amber-400/90 text-white';
     case 'closed':
-      return 'bg-red-500/70 text-white backdrop-blur-sm';
+      return 'bg-red-500/80 text-white';
     default:
-      return 'bg-gray-500/70 text-white backdrop-blur-sm';
+      return 'bg-gray-500/80 text-white';
   }
 };
 
@@ -59,26 +59,48 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
 
   return (
     <>
-      <div className="glass-card rounded-2xl overflow-hidden group">
-        <div className="relative overflow-hidden">
-          <img 
-            src={restaurant.image} 
-            alt={restaurant.name} 
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" 
+      <div className="group flex flex-col gap-3">
+        {/* Image — separated, fully rounded card */}
+        <div className="relative overflow-hidden rounded-3xl">
+          <img
+            src={restaurant.image}
+            alt={restaurant.name}
+            className="w-full h-44 md:h-48 object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
+          {restaurant.isHot && (
+            <div className="absolute top-3 left-3">
+              <Badge className="bg-red-500/90 text-white flex items-center gap-1 border border-white/30 rounded-full px-2.5 py-1 shadow-lg">
+                <Flame className="w-3 h-3" />
+                HOT
+              </Badge>
+            </div>
+          )}
+        </div>
+
+        {/* Info block — below the image, modern typography */}
+        <div className="px-1 flex flex-col gap-3">
+          {/* Title */}
+          <div className="flex items-center gap-2">
+            <h3 className="font-display text-lg md:text-xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+              {restaurant.name}
+            </h3>
+            {restaurant.isHot && (
+              <Star className="w-4 h-4 text-amber-400 fill-current" />
+            )}
+          </div>
+
+          {/* Category + status pills */}
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 onCategoryClick?.(restaurant.category);
               }}
-              className="bg-foreground/50 backdrop-blur-md rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20 hover:bg-primary/80 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-xs font-medium capitalize hover:bg-primary/20 transition"
               aria-label={`Filtrar por ${restaurant.category}`}
             >
-              <span className="text-white text-xs font-medium text-center capitalize">
-                {restaurant.category}
-              </span>
+              {restaurant.category}
             </button>
             {restaurant.status && (
               <button
@@ -87,60 +109,41 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
                   e.stopPropagation();
                   if (restaurant.status) onStatusClick?.(restaurant.status);
                 }}
-                className={`${getStatusColor(restaurant.status)} rounded-full px-3 py-1 min-w-[80px] flex justify-center border border-white/20 hover:brightness-110 transition cursor-pointer`}
+                className={`${getStatusColor(restaurant.status)} inline-flex items-center rounded-full px-3 py-1 text-xs font-medium shadow-sm hover:brightness-110 transition`}
                 aria-label={`Filtrar por estado ${restaurant.status}`}
               >
-                <span className="text-xs font-medium text-center">
-                  {getStatusText(restaurant.status, restaurant.opensIn)}
-                </span>
+                {getStatusText(restaurant.status, restaurant.opensIn)}
               </button>
             )}
           </div>
-          {restaurant.isHot && (
-            <div className="absolute top-3 left-3">
-              <Badge className="bg-red-500/80 backdrop-blur-sm text-white flex items-center gap-1 border border-white/20">
-                <Flame className="w-3 h-3" />
-                HOT
-              </Badge>
-            </div>
-          )}
-        </div>
-        
-        <div className="p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-              {restaurant.name}
-            </h3>
-            {restaurant.isHot && (
-              <Star className="w-5 h-5 text-amber-400 fill-current" />
-            )}
-          </div>
-          
+
+          {/* Description */}
           {restaurant.description && (
-            <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
+            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
               {restaurant.description}
             </p>
           )}
-          
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center text-muted-foreground text-sm">
-              <Clock className="w-4 h-4 mr-2 text-primary" />
+
+          {/* Meta */}
+          <div className="space-y-1.5">
+            <div className="flex items-center text-muted-foreground text-xs md:text-sm">
+              <Clock className="w-3.5 h-3.5 mr-2 text-primary" />
               <span>{restaurant.hours}</span>
             </div>
-            
-            <div className="flex items-center text-muted-foreground text-sm">
-              <MapPin className="w-4 h-4 mr-2 text-primary" />
+            <div className="flex items-center text-muted-foreground text-xs md:text-sm">
+              <MapPin className="w-3.5 h-3.5 mr-2 text-primary" />
               <span className="truncate">{restaurant.location}</span>
             </div>
           </div>
-          
-          <div className="flex gap-2">
+
+          {/* Actions — modern pill buttons */}
+          <div className="flex gap-2 pt-1">
             <WhatsAppButton phone={restaurant.phone} restaurantName={restaurant.name} />
-            
-            <button 
-              className="flex-1 glass font-medium py-2.5 px-4 rounded-xl transition-all duration-200 text-sm text-foreground/80 hover:text-primary hover:border-primary/30"
+            <button
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-foreground/5 hover:bg-foreground/10 border border-border/60 text-foreground font-medium py-2.5 px-4 rounded-full transition-all duration-200 text-sm"
               onClick={() => setIsMenuOpen(true)}
             >
+              <MenuIcon className="w-4 h-4" />
               Ver Menú
             </button>
           </div>
