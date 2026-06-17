@@ -103,54 +103,8 @@ const Index = () => {
         <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-lime-300/20 dark:bg-lime-700/15 rounded-full blur-3xl" />
       </div>
 
-      {/* Overlay modal for "Ver más" categories */}
-      {showAllCategories && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
-          onClick={() => setShowAllCategories(false)}
-        >
-          <div
-            className="glass-strong rounded-3xl border border-border/40 shadow-2xl p-4 w-[90vw] max-w-md max-h-[70vh] overflow-y-auto flex flex-col gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-1 pb-2 border-b border-border/30">
-              <span className="text-sm font-semibold text-foreground">Categorías</span>
-              <button
-                onClick={() => setShowAllCategories(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-foreground transition"
-                aria-label="Cerrar"
-              >
-                ×
-              </button>
-            </div>
-            {hiddenCategories.map((category) => (
-              <button
-                key={category}
-                onClick={() => {
-                  setSelectedCategory(category);
-                  setShowAllCategories(false);
-                }}
-                className={`px-4 py-3 rounded-2xl text-sm font-medium text-left transition-all ${
-                  selectedCategory === category
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-foreground/80 hover:bg-primary/10"
-                }`}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Fixed Search Header */}
+      {/* Fixed Categories Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-        <div className="glass-strong">
-          <div className="container mx-auto px-4 py-3">
-            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-          </div>
-        </div>
-        
         {/* Horizontal Scrolling Categories */}
         <div className="glass border-t-0" style={{ borderTop: 'none' }}>
           <div className="overflow-x-auto scrollbar-hide relative">
@@ -180,6 +134,26 @@ const Index = () => {
                   >
                     {showAllCategories ? "Cerrar" : "Ver más"}
                   </button>
+                  {showAllCategories && (
+                    <div className="absolute right-0 bottom-full mb-2 z-50 min-w-[180px] max-h-[60vh] overflow-y-auto glass-strong rounded-2xl border border-border/40 shadow-xl p-2 flex flex-col gap-1">
+                      {hiddenCategories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => {
+                            setSelectedCategory(category);
+                            setShowAllCategories(false);
+                          }}
+                          className={`px-3 py-2 rounded-xl text-sm font-medium text-left transition-all ${
+                            selectedCategory === category
+                              ? "bg-primary text-primary-foreground"
+                              : "text-foreground/80 hover:bg-primary/10"
+                          }`}
+                        >
+                          {category.charAt(0).toUpperCase() + category.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -199,17 +173,15 @@ const Index = () => {
             </button>
           </div>
         )}
-
-        {/* Promo Banner moved outside header */}
       </header>
 
-      {/* Floating Promo Banner - stays on screen like a popup */}
-      <div className="fixed bottom-4 left-4 right-4 z-50">
+      {/* Floating Promo Banner */}
+      <div className="fixed bottom-24 left-4 right-4 z-40">
         <PromoBanner />
       </div>
 
       {/* Main Content */}
-      <main className="pt-36 pb-8">
+      <main className="pt-20 pb-28">
         <div className="container mx-auto px-4">
           <div className="mb-6">
             <p className="text-muted-foreground text-center">
@@ -244,29 +216,14 @@ const Index = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="glass-strong border-t border-border/40">
-        <div className="container mx-auto px-4 py-6">
-          <div className="text-center">
-            <p className="text-sm font-semibold text-foreground mb-1">QuéComer</p>
-            <p className="text-muted-foreground text-xs">&copy; 2025 Guía Gastronómica La Victoria</p>
-            <p className="text-muted-foreground text-xs mt-1">Descubre los mejores sabores de tu ciudad</p>
-            
-            <div className="mt-4 pt-3 border-t border-border/30">
-              <p className="text-muted-foreground text-xs mb-2">¿Eres empresa? Únete a QuéComer</p>
-              <button
-                onClick={handleBusinessWhatsApp}
-                className="inline-flex items-center gap-1 bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-1.5 rounded-full text-xs font-medium transition-colors shadow-lg shadow-primary/20"
-              >
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.569-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
-                </svg>
-                Contáctanos
-              </button>
-            </div>
+      {/* Fixed Bottom Search Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <div className="glass-strong border-t border-border/40">
+          <div className="container mx-auto px-4 py-3">
+            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 };
