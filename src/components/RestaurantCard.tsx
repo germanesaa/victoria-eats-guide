@@ -84,6 +84,7 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
             alt={restaurant.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
+          {restaurant.isHot && (
             <div className="absolute top-3 left-3">
               <Badge className="bg-red-500/90 text-white flex items-center gap-1 border border-white/30 rounded-full px-2.5 py-1 shadow-lg">
                 <Flame className="w-3 h-3" />
