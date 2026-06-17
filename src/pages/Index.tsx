@@ -140,26 +140,6 @@ const Index = () => {
                   >
                     {showAllCategories ? "Cerrar" : "Ver más"}
                   </button>
-                  {showAllCategories && (
-                    <div className="absolute right-0 top-full mt-2 z-50 min-w-[180px] max-h-[60vh] overflow-y-auto glass-strong rounded-2xl border border-border/40 shadow-xl p-2 flex flex-col gap-1">
-                      {hiddenCategories.map((category) => (
-                        <button
-                          key={category}
-                          onClick={() => {
-                            setSelectedCategory(category);
-                            setShowAllCategories(false);
-                          }}
-                          className={`px-3 py-2 rounded-xl text-sm font-medium text-left transition-all ${
-                            selectedCategory === category
-                              ? "bg-primary text-primary-foreground"
-                              : "text-foreground/80 hover:bg-primary/10"
-                          }`}
-                        >
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
