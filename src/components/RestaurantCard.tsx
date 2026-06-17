@@ -78,11 +78,11 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
         onClick={handleCardClick}
       >
         {/* Image — separated, fully rounded card */}
-        <div className="relative overflow-hidden rounded-3xl">
+        <div className="relative overflow-hidden rounded-3xl aspect-square">
           <img
             src={restaurant.image}
             alt={restaurant.name}
-            className="w-full h-44 md:h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           {restaurant.isHot && (
             <div className="absolute top-3 left-3">
