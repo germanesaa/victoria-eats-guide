@@ -103,6 +103,46 @@ const Index = () => {
         <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-lime-300/20 dark:bg-lime-700/15 rounded-full blur-3xl" />
       </div>
 
+      {/* Overlay modal for "Ver más" categories */}
+      {showAllCategories && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowAllCategories(false)}
+        >
+          <div
+            className="glass-strong rounded-3xl border border-border/40 shadow-2xl p-4 w-[90vw] max-w-md max-h-[70vh] overflow-y-auto flex flex-col gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-1 pb-2 border-b border-border/30">
+              <span className="text-sm font-semibold text-foreground">Categorías</span>
+              <button
+                onClick={() => setShowAllCategories(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-foreground transition"
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+            </div>
+            {hiddenCategories.map((category) => (
+              <button
+                key={category}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setShowAllCategories(false);
+                }}
+                className={`px-4 py-3 rounded-2xl text-sm font-medium text-left transition-all ${
+                  selectedCategory === category
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-foreground/80 hover:bg-primary/10"
+                }`}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Fixed Search Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="glass-strong">
