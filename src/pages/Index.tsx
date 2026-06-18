@@ -6,6 +6,7 @@ import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
 import foodPatternBg from "@/assets/food-pattern-bg.png.asset.json";
+import quecomerLogo from "@/assets/quecomer-logo.png";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
