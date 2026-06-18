@@ -6,6 +6,7 @@ import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
 import foodPatternBg from "@/assets/food-pattern-bg.png.asset.json";
+import quecomerLogo from "@/assets/quecomer-logo.png";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -127,13 +128,18 @@ const Index = () => {
       {/* Main Content */}
       <main className="pt-6 pb-56">
         <div className="container mx-auto px-4">
-          <div className="mb-6">
-            <p className="text-muted-foreground text-center">
+          <div className="mb-6 flex items-center justify-center gap-2">
+            <img
+              src={quecomerLogo}
+              alt="QuéComer"
+              className="w-7 h-7 rounded-full object-cover shadow-sm ring-1 ring-primary/20"
+            />
+            <p className="text-foreground/80 font-medium text-sm">
               {filteredRestaurants.length} restaurante{filteredRestaurants.length !== 1 ? 's' : ''} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 max-w-md md:max-w-none mx-auto">
             {filteredRestaurants.map((restaurant, idx) => (
               <div key={restaurant.id} className="relative">
                 <RestaurantCard
@@ -145,15 +151,9 @@ const Index = () => {
                     setSelectedStatus(status);
                   }}
                 />
-                {/* Liquid-glass stylized divider between cards (mobile only) */}
+                {/* Uber Eats-style subtle divider (mobile only) */}
                 {idx < filteredRestaurants.length - 1 && (
-                  <div className="md:hidden mt-8 flex items-center justify-center gap-2" aria-hidden="true">
-                    <span className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-                    <span className="relative inline-flex items-center justify-center w-7 h-7 rounded-full glass-strong border border-primary/30">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary/70 shadow-[0_0_8px_hsl(var(--primary))]" />
-                    </span>
-                    <span className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-                  </div>
+                  <div className="md:hidden mt-6 h-px w-full bg-border/60" aria-hidden="true" />
                 )}
               </div>
             ))}
@@ -209,30 +209,26 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Upward overlay dropdown for hidden categories */}
+        {/* Upward overlay dropdown for hidden categories — compact list, same look as main chips */}
         {showAllCategories && (
-          <div
-            className="absolute left-0 right-0 bottom-full mb-2 px-4 z-[60]"
-          >
-            <div className="glass-strong rounded-3xl border border-border/40 shadow-2xl p-3 max-h-[55vh] overflow-y-auto">
-              <div className="grid grid-cols-2 gap-2">
-                {hiddenCategories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setShowAllCategories(false);
-                    }}
-                    className={`px-3 py-2.5 rounded-2xl text-sm font-medium text-left transition-all ${
-                      selectedCategory === category
-                        ? "bg-primary text-primary-foreground"
-                        : "glass-card text-foreground/80 hover:bg-primary/10"
-                    }`}
-                  >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </button>
-                ))}
-              </div>
+          <div className="absolute right-3 bottom-full mb-2 z-[60]">
+            <div className="glass-strong rounded-2xl border border-border/40 shadow-2xl p-2 max-h-[50vh] overflow-y-auto flex flex-col gap-1 min-w-[150px]">
+              {hiddenCategories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    setShowAllCategories(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap text-left transition-all ${
+                    selectedCategory === category
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
+                      : "glass-card text-foreground/80 hover:text-foreground"
+                  }`}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </button>
+              ))}
             </div>
           </div>
         )}

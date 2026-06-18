@@ -110,7 +110,7 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
         <div className="px-1 flex flex-col gap-3">
           {/* Title */}
           <div className="flex items-center gap-2">
-            <h3 className="font-display text-lg md:text-xl font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            <h3 className="font-display text-lg md:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors drop-shadow-sm">
               {restaurant.name}
             </h3>
             {restaurant.isHot && (
@@ -150,18 +150,18 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
 
           {/* Description */}
           {restaurant.description && (
-            <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+            <p className="text-foreground/75 text-sm leading-relaxed line-clamp-2 font-medium">
               {restaurant.description}
             </p>
           )}
 
           {/* Meta */}
           <div className="space-y-1.5">
-            <div className="flex items-center text-muted-foreground text-xs md:text-sm">
+            <div className="flex items-center text-foreground/75 text-xs md:text-sm font-medium">
               <Clock className="w-3.5 h-3.5 mr-2 text-primary" />
               <span>{restaurant.hours}</span>
             </div>
-            <div className="flex items-center text-muted-foreground text-xs md:text-sm">
+            <div className="flex items-center text-foreground/75 text-xs md:text-sm font-medium">
               <MapPin className="w-3.5 h-3.5 mr-2 text-primary" />
               <span className="truncate">{restaurant.location}</span>
             </div>
