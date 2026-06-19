@@ -88,18 +88,6 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close "ver más" dropdown when clicking outside
-  useEffect(() => {
-    if (!showAllCategories) return;
-    const handleClick = (e: MouseEvent) => {
-      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
-        setShowAllCategories(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [showAllCategories]);
-
   const filteredRestaurants = restaurantsWithStatus
     .filter(restaurant => {
       const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
