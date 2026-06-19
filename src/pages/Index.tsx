@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import PromoBanner from "@/components/PromoBanner";
@@ -51,8 +51,6 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState<RestaurantStatus | "all">("all");
   const [headerVisible, setHeaderVisible] = useState(true);
-  const [showAllCategories, setShowAllCategories] = useState(false);
-  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   const { restaurants } = useRestaurants();
 
@@ -61,10 +59,6 @@ const Index = () => {
     new Set(restaurants.map((r) => r.category.toLowerCase()))
   ).sort();
   const categories: string[] = ["all", ...dataCategories];
-  const VISIBLE_COUNT = 5;
-  const visibleCategories = categories.slice(0, VISIBLE_COUNT);
-  const hiddenCategories = categories.slice(VISIBLE_COUNT);
-  const hasMoreCategories = hiddenCategories.length > 0;
 
   const restaurantsWithStatus = useRestaurantStatus(restaurants);
 
