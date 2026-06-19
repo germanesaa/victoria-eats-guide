@@ -254,69 +254,13 @@ const Index = () => {
         </div>
       </main>
 
-      {/* Fixed Bottom: Categories + Search */}
+      {/* Fixed Bottom: Search bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
         <div className="glass-strong border-t border-border/40">
-          {/* Horizontal Scrolling Categories */}
-          <div className="overflow-x-auto scrollbar-hide relative">
-            <div className="flex gap-2 px-4 pt-3 pb-2 min-w-max items-center">
-              {visibleCategories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                      : "glass-card text-foreground/70 hover:text-foreground"
-                  }`}
-                >
-                  {category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-              {hasMoreCategories && (
-                <div className="relative flex-shrink-0" ref={moreMenuRef}>
-                  <button
-                    onClick={() => setShowAllCategories(v => !v)}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-300 ${
-                      hiddenCategories.includes(selectedCategory)
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                        : "glass-card text-foreground/70 hover:text-foreground"
-                    }`}
-                  >
-                    {showAllCategories ? "Cerrar" : "Ver más"}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="container mx-auto px-4 pb-3 pt-1">
+          <div className="container mx-auto px-4 py-3">
             <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
         </div>
-
-        {/* Upward overlay dropdown for hidden categories — compact list, same look as main chips */}
-        {showAllCategories && (
-          <div className="absolute right-3 bottom-full mb-2 z-[60]">
-            <div className="glass-strong rounded-2xl border border-border/40 shadow-2xl p-2 max-h-[50vh] overflow-y-auto flex flex-col gap-1 min-w-[150px]">
-              {hiddenCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setShowAllCategories(false);
-                  }}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap text-left transition-all ${
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
-                      : "glass-card text-foreground/80 hover:text-foreground"
-                  }`}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
