@@ -141,7 +141,7 @@ const Index = () => {
       )}
 
       {/* Floating Promo Banner */}
-      <div className="fixed bottom-44 left-4 right-4 z-40">
+      <div className="fixed bottom-24 left-4 right-4 z-40">
         <PromoBanner />
       </div>
 
