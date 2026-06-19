@@ -146,18 +146,15 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <main className="pt-4 pb-40">
+      <main className="pt-14 pb-40">
         <div className="container mx-auto px-4">
-          {/* Small top brand bar */}
-          <div className="mb-5 flex items-center justify-center gap-2">
+          {/* Small floating logo top-left */}
+          <div className="fixed top-3 left-4 z-40">
             <img
               src={quecomerLogo}
               alt="QuéComer"
-              className="w-8 h-8 rounded-xl object-cover shadow-sm ring-1 ring-primary/20"
+              className="w-6 h-6 object-contain opacity-80"
             />
-            <span className="font-display text-base font-bold tracking-tight text-foreground">
-              Qué<span className="text-foreground/70 font-semibold"> Comer</span>
-            </span>
           </div>
 
           {/* Categorías como tiles con ícono */}
