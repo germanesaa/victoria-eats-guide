@@ -164,22 +164,73 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <main className="pt-6 pb-56">
+      <main className="pt-4 pb-40">
         <div className="container mx-auto px-4">
-          <div className="mb-6 flex items-center justify-center gap-2">
+          {/* Small top brand bar */}
+          <div className="mb-5 flex items-center justify-center gap-2">
             <img
               src={quecomerLogo}
               alt="QuéComer"
-              className="w-7 h-7 rounded-full object-cover shadow-sm ring-1 ring-primary/20"
+              className="w-8 h-8 rounded-xl object-cover shadow-sm ring-1 ring-primary/20"
             />
-            <p className="text-foreground/80 font-medium text-sm">
-              {filteredRestaurants.length} restaurante{filteredRestaurants.length !== 1 ? 's' : ''} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
-            </p>
+            <span className="font-display text-base font-bold tracking-tight text-foreground">
+              Qué<span className="text-foreground/70 font-semibold"> Comer</span>
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 max-w-md md:max-w-none mx-auto">
-            {filteredRestaurants.map((restaurant, idx) => (
-              <div key={restaurant.id} className="relative">
+          {/* Categorías como tiles con ícono */}
+          <section className="mb-5">
+            <h2 className="font-display text-xl font-bold tracking-tight text-foreground mb-3 px-1">
+              Categorías
+            </h2>
+            <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide">
+              <div className="flex gap-3 min-w-max pb-1">
+                {categories.map((category) => {
+                  const meta = getCategoryMeta(category);
+                  const active = selectedCategory === category;
+                  const label = category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1);
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className="flex flex-col items-center gap-1.5 w-[72px] flex-shrink-0 group"
+                    >
+                      <div
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm transition-all duration-200 ${meta.bg} ${
+                          active
+                            ? "ring-2 ring-primary scale-105"
+                            : "ring-1 ring-white/40 group-hover:scale-105"
+                        }`}
+                      >
+                        <span>{meta.emoji}</span>
+                      </div>
+                      <span
+                        className={`text-[11px] font-semibold text-center leading-tight ${
+                          active ? "text-primary" : "text-foreground/80"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Sección destacada */}
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h2 className="font-display text-xl font-bold tracking-tight text-foreground">
+              Restaurantes
+            </h2>
+            <span className="text-xs font-medium text-foreground/70">
+              {filteredRestaurants.length} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+            {filteredRestaurants.map((restaurant) => (
+              <div key={restaurant.id}>
                 <RestaurantCard
                   restaurant={restaurant}
                   onCategoryClick={(cat) => {
@@ -189,10 +240,6 @@ const Index = () => {
                     setSelectedStatus(status);
                   }}
                 />
-                {/* Uber Eats-style subtle divider (mobile only) */}
-                {idx < filteredRestaurants.length - 1 && (
-                  <div className="md:hidden mt-6 h-px w-full bg-border/60" aria-hidden="true" />
-                )}
               </div>
             ))}
           </div>
