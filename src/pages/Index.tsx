@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import PromoBanner from "@/components/PromoBanner";
@@ -8,13 +8,49 @@ import { notificationService } from "@/services/notificationService";
 import foodPatternBg from "@/assets/food-pattern-bg.png.asset.json";
 import quecomerLogo from "@/assets/quecomer-logo.png";
 
+// Visual meta for category tiles (emoji + soft tile color)
+const CATEGORY_META: Record<string, { emoji: string; bg: string }> = {
+  all: { emoji: "🍽️", bg: "bg-emerald-200/70 dark:bg-emerald-900/50" },
+  pizza: { emoji: "🍕", bg: "bg-orange-200/80 dark:bg-orange-900/50" },
+  pizzas: { emoji: "🍕", bg: "bg-orange-200/80 dark:bg-orange-900/50" },
+  hamburguesa: { emoji: "🍔", bg: "bg-amber-200/80 dark:bg-amber-900/50" },
+  hamburguesas: { emoji: "🍔", bg: "bg-amber-200/80 dark:bg-amber-900/50" },
+  burger: { emoji: "🍔", bg: "bg-amber-200/80 dark:bg-amber-900/50" },
+  sushi: { emoji: "🍣", bg: "bg-pink-200/80 dark:bg-pink-900/50" },
+  pasta: { emoji: "🍝", bg: "bg-slate-200/80 dark:bg-slate-700/50" },
+  pastas: { emoji: "🍝", bg: "bg-slate-200/80 dark:bg-slate-700/50" },
+  ensalada: { emoji: "🥗", bg: "bg-lime-200/80 dark:bg-lime-900/50" },
+  ensaladas: { emoji: "🥗", bg: "bg-lime-200/80 dark:bg-lime-900/50" },
+  postre: { emoji: "🍰", bg: "bg-rose-200/80 dark:bg-rose-900/50" },
+  postres: { emoji: "🍰", bg: "bg-rose-200/80 dark:bg-rose-900/50" },
+  bebida: { emoji: "🥤", bg: "bg-sky-200/80 dark:bg-sky-900/50" },
+  bebidas: { emoji: "🥤", bg: "bg-sky-200/80 dark:bg-sky-900/50" },
+  cafe: { emoji: "☕", bg: "bg-amber-100/80 dark:bg-amber-950/50" },
+  café: { emoji: "☕", bg: "bg-amber-100/80 dark:bg-amber-950/50" },
+  desayuno: { emoji: "🥐", bg: "bg-yellow-200/80 dark:bg-yellow-900/50" },
+  desayunos: { emoji: "🥐", bg: "bg-yellow-200/80 dark:bg-yellow-900/50" },
+  mariscos: { emoji: "🦐", bg: "bg-cyan-200/80 dark:bg-cyan-900/50" },
+  mexicana: { emoji: "🌮", bg: "bg-red-200/80 dark:bg-red-900/50" },
+  pollo: { emoji: "🍗", bg: "bg-orange-100/80 dark:bg-orange-950/50" },
+  parrilla: { emoji: "🥩", bg: "bg-red-300/70 dark:bg-red-950/50" },
+  asiatica: { emoji: "🥡", bg: "bg-fuchsia-200/80 dark:bg-fuchsia-900/50" },
+  asiática: { emoji: "🥡", bg: "bg-fuchsia-200/80 dark:bg-fuchsia-900/50" },
+  vegana: { emoji: "🥬", bg: "bg-green-200/80 dark:bg-green-900/50" },
+  vegetariana: { emoji: "🥦", bg: "bg-green-200/80 dark:bg-green-900/50" },
+  helado: { emoji: "🍦", bg: "bg-pink-100/80 dark:bg-pink-950/50" },
+  helados: { emoji: "🍦", bg: "bg-pink-100/80 dark:bg-pink-950/50" },
+};
+
+const getCategoryMeta = (cat: string) => {
+  const key = cat.toLowerCase();
+  return CATEGORY_META[key] ?? { emoji: "🍴", bg: "bg-muted/70" };
+};
+
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState<RestaurantStatus | "all">("all");
   const [headerVisible, setHeaderVisible] = useState(true);
-  const [showAllCategories, setShowAllCategories] = useState(false);
-  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   const { restaurants } = useRestaurants();
 
@@ -23,10 +59,6 @@ const Index = () => {
     new Set(restaurants.map((r) => r.category.toLowerCase()))
   ).sort();
   const categories: string[] = ["all", ...dataCategories];
-  const VISIBLE_COUNT = 6;
-  const visibleCategories = categories.slice(0, VISIBLE_COUNT);
-  const hiddenCategories = categories.slice(VISIBLE_COUNT);
-  const hasMoreCategories = hiddenCategories.length > 0;
 
   const restaurantsWithStatus = useRestaurantStatus(restaurants);
 
@@ -55,18 +87,6 @@ const Index = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Close "ver más" dropdown when clicking outside
-  useEffect(() => {
-    if (!showAllCategories) return;
-    const handleClick = (e: MouseEvent) => {
-      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
-        setShowAllCategories(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [showAllCategories]);
 
   const filteredRestaurants = restaurantsWithStatus
     .filter(restaurant => {
@@ -121,27 +141,78 @@ const Index = () => {
       )}
 
       {/* Floating Promo Banner */}
-      <div className="fixed bottom-44 left-4 right-4 z-40">
+      <div className="fixed bottom-24 left-4 right-4 z-40">
         <PromoBanner />
       </div>
 
       {/* Main Content */}
-      <main className="pt-6 pb-56">
+      <main className="pt-4 pb-40">
         <div className="container mx-auto px-4">
-          <div className="mb-6 flex items-center justify-center gap-2">
+          {/* Small top brand bar */}
+          <div className="mb-5 flex items-center justify-center gap-2">
             <img
               src={quecomerLogo}
               alt="QuéComer"
-              className="w-7 h-7 rounded-full object-cover shadow-sm ring-1 ring-primary/20"
+              className="w-8 h-8 rounded-xl object-cover shadow-sm ring-1 ring-primary/20"
             />
-            <p className="text-foreground/80 font-medium text-sm">
-              {filteredRestaurants.length} restaurante{filteredRestaurants.length !== 1 ? 's' : ''} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
-            </p>
+            <span className="font-display text-base font-bold tracking-tight text-foreground">
+              Qué<span className="text-foreground/70 font-semibold"> Comer</span>
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 max-w-md md:max-w-none mx-auto">
-            {filteredRestaurants.map((restaurant, idx) => (
-              <div key={restaurant.id} className="relative">
+          {/* Categorías como tiles con ícono */}
+          <section className="mb-5">
+            <h2 className="font-display text-xl font-bold tracking-tight text-foreground mb-3 px-1">
+              Categorías
+            </h2>
+            <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide">
+              <div className="flex gap-3 min-w-max pb-1">
+                {categories.map((category) => {
+                  const meta = getCategoryMeta(category);
+                  const active = selectedCategory === category;
+                  const label = category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1);
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className="flex flex-col items-center gap-1.5 w-[72px] flex-shrink-0 group"
+                    >
+                      <div
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm transition-all duration-200 ${meta.bg} ${
+                          active
+                            ? "ring-2 ring-primary scale-105"
+                            : "ring-1 ring-white/40 group-hover:scale-105"
+                        }`}
+                      >
+                        <span>{meta.emoji}</span>
+                      </div>
+                      <span
+                        className={`text-[11px] font-semibold text-center leading-tight ${
+                          active ? "text-primary" : "text-foreground/80"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Sección destacada */}
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h2 className="font-display text-xl font-bold tracking-tight text-foreground">
+              Restaurantes
+            </h2>
+            <span className="text-xs font-medium text-foreground/70">
+              {filteredRestaurants.length} encontrado{filteredRestaurants.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+            {filteredRestaurants.map((restaurant) => (
+              <div key={restaurant.id}>
                 <RestaurantCard
                   restaurant={restaurant}
                   onCategoryClick={(cat) => {
@@ -151,10 +222,6 @@ const Index = () => {
                     setSelectedStatus(status);
                   }}
                 />
-                {/* Uber Eats-style subtle divider (mobile only) */}
-                {idx < filteredRestaurants.length - 1 && (
-                  <div className="md:hidden mt-6 h-px w-full bg-border/60" aria-hidden="true" />
-                )}
               </div>
             ))}
           </div>
@@ -169,69 +236,13 @@ const Index = () => {
         </div>
       </main>
 
-      {/* Fixed Bottom: Categories + Search */}
+      {/* Fixed Bottom: Search bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
         <div className="glass-strong border-t border-border/40">
-          {/* Horizontal Scrolling Categories */}
-          <div className="overflow-x-auto scrollbar-hide relative">
-            <div className="flex gap-2 px-4 pt-3 pb-2 min-w-max items-center">
-              {visibleCategories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                      : "glass-card text-foreground/70 hover:text-foreground"
-                  }`}
-                >
-                  {category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-              {hasMoreCategories && (
-                <div className="relative flex-shrink-0" ref={moreMenuRef}>
-                  <button
-                    onClick={() => setShowAllCategories(v => !v)}
-                    className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-300 ${
-                      hiddenCategories.includes(selectedCategory)
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                        : "glass-card text-foreground/70 hover:text-foreground"
-                    }`}
-                  >
-                    {showAllCategories ? "Cerrar" : "Ver más"}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="container mx-auto px-4 pb-3 pt-1">
+          <div className="container mx-auto px-4 py-3">
             <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
         </div>
-
-        {/* Upward overlay dropdown for hidden categories — compact list, same look as main chips */}
-        {showAllCategories && (
-          <div className="absolute right-3 bottom-full mb-2 z-[60]">
-            <div className="glass-strong rounded-2xl border border-border/40 shadow-2xl p-2 max-h-[50vh] overflow-y-auto flex flex-col gap-1 min-w-[150px]">
-              {hiddenCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setShowAllCategories(false);
-                  }}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap text-left transition-all ${
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
-                      : "glass-card text-foreground/80 hover:text-foreground"
-                  }`}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
