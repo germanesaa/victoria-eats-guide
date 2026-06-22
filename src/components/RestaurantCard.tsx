@@ -4,11 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import MenuModal from "./MenuModal";
 import { useState } from "react";
 import { RestaurantStatus } from "@/hooks/useRestaurantStatus";
+import { getCategoryMeta, getAllCategories } from "@/lib/categoryMeta";
 
 interface Restaurant {
   id: string;
   name: string;
   category: string;
+  categories?: string[];
   image: string;
   hours: string;
   location: string;
@@ -120,18 +122,25 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
 
           {/* Category + status pills */}
           <div className="flex flex-wrap items-center gap-1">
-            <button
-              type="button"
-              data-no-menu
-              onClick={(e) => {
-                e.stopPropagation();
-                onCategoryClick?.(restaurant.category);
-              }}
-              className="inline-flex items-center rounded-full bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 text-[10px] font-medium capitalize hover:bg-primary/20 transition"
-              aria-label={`Filtrar por ${restaurant.category}`}
-            >
-              {restaurant.category}
-            </button>
+            {getAllCategories(restaurant.category, restaurant.categories).map((cat) => {
+              const meta = getCategoryMeta(cat);
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  data-no-menu
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCategoryClick?.(cat);
+                  }}
+                  className={`inline-flex items-center gap-1 rounded-full ${meta.bg} text-foreground/80 border border-white/40 dark:border-white/10 pl-1 pr-2 py-0.5 text-[10px] font-medium capitalize hover:brightness-105 transition`}
+                  aria-label={`Filtrar por ${cat}`}
+                >
+                  <span className="text-[12px] leading-none">{meta.emoji}</span>
+                  <span>{cat}</span>
+                </button>
+              );
+            })}
             {restaurant.status && (
               <button
                 type="button"
