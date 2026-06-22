@@ -146,7 +146,7 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <main className="pt-14 pb-40">
+      <main className="pt-24 pb-40">
         <div className="container mx-auto px-4">
           {/* Logo + brand name top-left */}
           <div className="fixed top-3 left-4 z-40 flex items-center gap-2.5 glass px-3 py-2 rounded-full">
@@ -161,12 +161,12 @@ const Index = () => {
           </div>
 
           {/* Categorías como tiles con ícono */}
-          <section className="mb-5">
+          <section className="mb-5 mt-2">
             <h2 className="font-display text-xl font-bold tracking-tight text-foreground mb-3 px-1">
               Categorías
             </h2>
-            <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide">
-              <div className="flex gap-3 min-w-max pb-1">
+            <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide py-2">
+              <div className="flex gap-3 min-w-max">
                 {categories.map((category) => {
                   const meta = getCategoryMeta(category);
                   const active = selectedCategory === category;
