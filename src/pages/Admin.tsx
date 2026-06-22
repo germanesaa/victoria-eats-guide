@@ -13,6 +13,7 @@ import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/d
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
 import { isValidBannerUrl } from "@/utils/urlValidation";
+import { PREDEFINED_CATEGORIES, getCategoryMeta } from "@/lib/categoryMeta";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import type { Session } from "@supabase/supabase-js";
@@ -118,6 +119,7 @@ const Admin = () => {
   const emptyRestaurant: Omit<Restaurant, 'id'> = {
     name: "",
     category: "",
+    categories: [],
     image: "",
     hours: "",
     detailedHours: {
@@ -143,7 +145,7 @@ const Admin = () => {
   const newFileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = ["comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres", "café", "mariscos", "pollos"];
+  const categories = PREDEFINED_CATEGORIES;
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -277,7 +279,9 @@ const Admin = () => {
   const handleEdit = (restaurant: Restaurant) => {
     setEditingId(restaurant.id);
     setEditingRestaurant({
-      name: restaurant.name, category: restaurant.category, image: restaurant.image,
+      name: restaurant.name, category: restaurant.category,
+      categories: restaurant.categories || [],
+      image: restaurant.image,
       hours: restaurant.hours, detailedHours: restaurant.detailedHours, location: restaurant.location,
       phone: restaurant.phone, menuUrl: restaurant.menuUrl || "", description: restaurant.description || "",
       isHot: restaurant.isHot || false, priority: restaurant.priority,
@@ -333,6 +337,47 @@ const Admin = () => {
               ))}
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      {/* Multi-category selector — extra categories the restaurant also offers */}
+      <div className="space-y-2">
+        <Label>Categorías adicionales</Label>
+        <p className="text-xs text-muted-foreground">
+          Marca todas las categorías que este restaurante ofrece (además de la principal). Ej: una pastelería que también vende pizzas y café.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {categories.map((cat) => {
+            const selected = (restaurant.categories || []).includes(cat);
+            const isPrimary = restaurant.category === cat;
+            const meta = getCategoryMeta(cat);
+            return (
+              <button
+                key={cat}
+                type="button"
+                disabled={isPrimary}
+                onClick={() => {
+                  const current: string[] = restaurant.categories || [];
+                  const next = selected
+                    ? current.filter((c) => c !== cat)
+                    : [...current, cat];
+                  setRestaurant({ ...restaurant, categories: next });
+                }}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium capitalize transition ${
+                  isPrimary
+                    ? "border-primary/40 bg-primary/10 text-primary opacity-60 cursor-not-allowed"
+                    : selected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : `border-gray-300 ${meta.bg} text-foreground hover:brightness-95`
+                }`}
+                title={isPrimary ? "Esta es la categoría principal" : ""}
+              >
+                <span>{meta.emoji}</span>
+                <span>{cat}</span>
+                {isPrimary && <span className="ml-1 text-[10px]">(principal)</span>}
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -58,6 +58,7 @@ export type Database = {
       }
       restaurants: {
         Row: {
+          categories: string[]
           category: string
           created_at: string
           description: string | null
@@ -75,6 +76,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          categories?: string[]
           category: string
           created_at?: string
           description?: string | null
@@ -92,6 +94,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          categories?: string[]
           category?: string
           created_at?: string
           description?: string | null
