@@ -6,6 +6,7 @@ type Row = {
   id: string;
   name: string;
   category: string;
+  categories: string[] | null;
   image: string;
   hours: string;
   detailed_hours: any;
@@ -22,6 +23,7 @@ const rowToRestaurant = (r: Row): Restaurant => ({
   id: r.id,
   name: r.name,
   category: r.category,
+  categories: (r.categories || []) as string[],
   image: r.image || "",
   hours: r.hours || "",
   detailedHours: (r.detailed_hours || {}) as RestaurantHours,
@@ -37,6 +39,7 @@ const rowToRestaurant = (r: Row): Restaurant => ({
 const restaurantToRow = (r: Omit<Restaurant, "id"> & { id?: string }) => ({
   name: r.name,
   category: r.category,
+  categories: r.categories || [],
   image: r.image || "",
   hours: r.hours || "",
   detailed_hours: r.detailedHours || {},
