@@ -13,6 +13,7 @@ import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/d
 import { useToast } from "@/hooks/use-toast";
 import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
 import { isValidBannerUrl } from "@/utils/urlValidation";
+import { PREDEFINED_CATEGORIES, getCategoryMeta } from "@/lib/categoryMeta";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import type { Session } from "@supabase/supabase-js";
@@ -118,6 +119,7 @@ const Admin = () => {
   const emptyRestaurant: Omit<Restaurant, 'id'> = {
     name: "",
     category: "",
+    categories: [],
     image: "",
     hours: "",
     detailedHours: {
@@ -143,7 +145,7 @@ const Admin = () => {
   const newFileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = ["comida china", "pizza", "hamburguesas", "parrilla", "sushi", "postres", "café", "mariscos", "pollos"];
+  const categories = PREDEFINED_CATEGORIES;
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -277,7 +279,9 @@ const Admin = () => {
   const handleEdit = (restaurant: Restaurant) => {
     setEditingId(restaurant.id);
     setEditingRestaurant({
-      name: restaurant.name, category: restaurant.category, image: restaurant.image,
+      name: restaurant.name, category: restaurant.category,
+      categories: restaurant.categories || [],
+      image: restaurant.image,
       hours: restaurant.hours, detailedHours: restaurant.detailedHours, location: restaurant.location,
       phone: restaurant.phone, menuUrl: restaurant.menuUrl || "", description: restaurant.description || "",
       isHot: restaurant.isHot || false, priority: restaurant.priority,
