@@ -6,7 +6,7 @@ import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
 import foodPatternBg from "@/assets/food-pattern-bg.png.asset.json";
-import quecomerLogo from "@/assets/quecomer-logo.png";
+import quecomerLogo from "@/assets/quecomer-logo-green.png.asset.json";
 
 // Visual meta for category tiles (emoji + soft tile color)
 const CATEGORY_META: Record<string, { emoji: string; bg: string }> = {
@@ -148,13 +148,16 @@ const Index = () => {
       {/* Main Content */}
       <main className="pt-14 pb-40">
         <div className="container mx-auto px-4">
-          {/* Small floating logo top-left */}
-          <div className="fixed top-3 left-4 z-40">
+          {/* Logo + brand name top-left */}
+          <div className="fixed top-3 left-4 z-40 flex items-center gap-2.5 glass px-3 py-2 rounded-full">
             <img
-              src={quecomerLogo}
+              src={quecomerLogo.url}
               alt="QuéComer"
-              className="w-6 h-6 object-contain opacity-80"
+              className="w-9 h-9 object-contain"
             />
+            <span className="font-display text-base font-semibold text-foreground tracking-tight">
+              Qué Comer
+            </span>
           </div>
 
           {/* Categorías como tiles con ícono */}
