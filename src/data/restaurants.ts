@@ -12,6 +12,7 @@ export interface Restaurant {
   id: string;
   name: string;
   category: string;
+  categories?: string[];
   image: string;
   hours: string;
   detailedHours: RestaurantHours;
