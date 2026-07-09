@@ -120,7 +120,7 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
             )}
           </div>
 
-          {/* Category + status pills */}
+          {/* Category icons + status pill */}
           <div className="flex flex-wrap items-center gap-1">
             {getAllCategories(restaurant.category, restaurant.categories).map((cat) => {
               const meta = getCategoryMeta(cat);
@@ -133,11 +133,11 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
                     e.stopPropagation();
                     onCategoryClick?.(cat);
                   }}
-                  className={`inline-flex items-center gap-1 rounded-full ${meta.bg} text-foreground/80 border border-white/40 dark:border-white/10 pl-1 pr-2 py-0.5 text-[10px] font-medium capitalize hover:brightness-105 transition`}
+                  className="text-base leading-none hover:scale-110 transition"
                   aria-label={`Filtrar por ${cat}`}
+                  title={cat}
                 >
-                  <span className="text-[12px] leading-none">{meta.emoji}</span>
-                  <span>{cat}</span>
+                  {meta.emoji}
                 </button>
               );
             })}
