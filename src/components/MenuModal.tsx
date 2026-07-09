@@ -93,7 +93,7 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
           {/* Menu Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-foreground font-playfair">Menú</h3>
+              <h3 className="text-lg font-bold text-foreground font-display">Menú</h3>
               <Utensils className="w-4 h-4 text-primary" />
             </div>
             
@@ -101,17 +101,17 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
               {menuCategories.map((category, index) => (
                 <div key={index} className="glass-card rounded-xl px-3 py-2 flex items-center justify-between bg-muted/40">
                   <div className="min-w-0 flex-1">
-                    <h4 className="text-sm font-semibold text-foreground font-playfair leading-tight">{category.name}</h4>
+                    <h4 className="text-sm font-semibold text-foreground font-display leading-tight">{category.name}</h4>
                     <p className="text-[11px] text-muted-foreground truncate">{category.items.join(', ')}</p>
                   </div>
-                  <div className="text-sm font-bold text-primary font-playfair ml-2 flex-shrink-0">
+                  <div className="text-sm font-bold text-primary font-display ml-2 flex-shrink-0">
                     {category.price}
                   </div>
                 </div>
               ))}
             </div>
 
-            <button 
+            <button
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-4 rounded-xl shadow-lg shadow-primary/25 text-sm transition-all"
               onClick={() => window.open(restaurant.menuUrl || '#', '_blank')}
             >
