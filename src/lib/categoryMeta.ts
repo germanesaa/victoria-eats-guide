@@ -1,7 +1,7 @@
 // Visual meta (emoji + soft tile color) for restaurant categories.
 // Shared between the home page tiles and the restaurant cards so the
 // same icons are used everywhere.
-export const CATEGORY_META: Record<string, { emoji: string; bg: string }> = {
+export const CATEGORY_META: Record<string, { emoji: string; bg: string; anim: string }> = {
   all: { emoji: "🍽️", bg: "bg-emerald-200/70 dark:bg-emerald-900/50", anim: "pop" },
   pizza: { emoji: "🍕", bg: "bg-orange-200/80 dark:bg-orange-900/50", anim: "spin" },
   pizzas: { emoji: "🍕", bg: "bg-orange-200/80 dark:bg-orange-900/50", anim: "spin" },
