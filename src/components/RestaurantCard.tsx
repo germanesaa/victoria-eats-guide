@@ -133,7 +133,7 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
                     e.stopPropagation();
                     onCategoryClick?.(cat);
                   }}
-                  className="text-base leading-none hover:scale-110 transition"
+                  className={`cat-icon cat-anim-${meta.anim} text-base leading-none`}
                   aria-label={`Filtrar por ${cat}`}
                   title={cat}
                 >

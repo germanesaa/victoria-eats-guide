@@ -153,7 +153,7 @@ const Index = () => {
                             : "ring-1 ring-white/40 group-hover:scale-105"
                         }`}
                       >
-                        <span>{meta.emoji}</span>
+                        <span className={`cat-icon cat-anim-${meta.anim}`}>{meta.emoji}</span>
                       </div>
                       <span
                         className={`text-[11px] font-semibold text-center leading-tight ${
