@@ -126,3 +126,116 @@
     inset 0 1px 0 hsla(var(--glass-card-inset));
   transform: translateY(-2px);
 }
+
+/* ============================================================
+   Category icon hover animations
+   Each keyframe is themed to fit its category (spin pizza, bounce
+   burger, wiggle sushi, etc.). Applied via .cat-anim-{name} on the
+   emoji element; only runs on hover / focus / active.
+   ============================================================ */
+
+@keyframes cat-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes cat-bounce {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(-8px) scale(1.1); }
+  60%      { transform: translateY(0) scale(0.95); }
+}
+@keyframes cat-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-12deg); }
+  75%      { transform: rotate(12deg); }
+}
+@keyframes cat-swing {
+  0%, 100% { transform: rotate(-8deg); }
+  50%      { transform: rotate(8deg); }
+}
+@keyframes cat-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(4px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(3px); }
+}
+@keyframes cat-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.2); }
+}
+@keyframes cat-tilt {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50%      { transform: rotate(-25deg) translateY(-3px); }
+}
+@keyframes cat-steam {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-4px) scale(1.08); }
+}
+@keyframes cat-swim {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%      { transform: translateX(-4px) rotate(-8deg); }
+  75%      { transform: translateX(4px) rotate(8deg); }
+}
+@keyframes cat-flap {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-15deg) translateY(-2px); }
+  75%      { transform: rotate(15deg) translateY(-2px); }
+}
+@keyframes cat-heat {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50%      { transform: scale(1.12); filter: brightness(1.25); }
+}
+@keyframes cat-grow {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25) rotate(-6deg); }
+  100% { transform: scale(1.1); }
+}
+@keyframes cat-melt {
+  0%   { transform: translateY(0) scaleY(1); }
+  100% { transform: translateY(2px) scaleY(0.92); }
+}
+@keyframes cat-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); }
+  100% { transform: scale(1.1); }
+}
+
+.cat-icon {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.group:hover .cat-anim-spin,
+.cat-anim-spin:hover        { animation: cat-spin 1.2s linear infinite; }
+.group:hover .cat-anim-bounce,
+.cat-anim-bounce:hover      { animation: cat-bounce 0.7s ease-in-out infinite; }
+.group:hover .cat-anim-wiggle,
+.cat-anim-wiggle:hover      { animation: cat-wiggle 0.5s ease-in-out infinite; }
+.group:hover .cat-anim-swing,
+.cat-anim-swing:hover       { animation: cat-swing 0.9s ease-in-out infinite; }
+.group:hover .cat-anim-shake,
+.cat-anim-shake:hover       { animation: cat-shake 0.5s ease-in-out infinite; }
+.group:hover .cat-anim-pulse,
+.cat-anim-pulse:hover       { animation: cat-pulse 0.8s ease-in-out infinite; }
+.group:hover .cat-anim-tilt,
+.cat-anim-tilt:hover        { animation: cat-tilt 0.9s ease-in-out infinite; }
+.group:hover .cat-anim-steam,
+.cat-anim-steam:hover       { animation: cat-steam 1s ease-in-out infinite; }
+.group:hover .cat-anim-swim,
+.cat-anim-swim:hover        { animation: cat-swim 1s ease-in-out infinite; }
+.group:hover .cat-anim-flap,
+.cat-anim-flap:hover        { animation: cat-flap 0.5s ease-in-out infinite; }
+.group:hover .cat-anim-heat,
+.cat-anim-heat:hover        { animation: cat-heat 0.9s ease-in-out infinite; }
+.group:hover .cat-anim-grow,
+.cat-anim-grow:hover        { animation: cat-grow 0.9s ease-in-out infinite; }
+.group:hover .cat-anim-melt,
+.cat-anim-melt:hover        { animation: cat-melt 1s ease-in-out infinite alternate; }
+.group:hover .cat-anim-pop,
+.cat-anim-pop:hover         { animation: cat-pop 0.6s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="cat-anim-"] { animation: none !important; }
+}
