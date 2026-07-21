@@ -28,6 +28,10 @@
     --ring: 152 94% 39%;
     --radius: 1rem;
 
+    /* Brand gradient companion */
+    --primary-dark: 155 80% 28%;
+    --primary-dark-foreground: 0 0% 100%;
+
     /* Liquid glass tokens */
     --glass-bg: 0 0% 100% / 0.08;
     --glass-border: 0 0% 100% / 0.25;
