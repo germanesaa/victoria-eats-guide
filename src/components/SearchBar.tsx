@@ -16,7 +16,7 @@ const SearchBar = ({ searchTerm, onSearchChange }: SearchBarProps) => {
         placeholder="Buscar restaurantes, comida, ubicación..."
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="pl-10 pr-4 py-3 w-full border border-border/50 rounded-full bg-background/60 backdrop-blur-sm focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
+        className="pl-10 pr-4 py-3 w-full border border-border/50 rounded-full bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200"
       />
     </div>
   );
