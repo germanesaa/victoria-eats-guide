@@ -76,11 +76,11 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
   return (
     <>
       <div
-        className="group flex flex-col cursor-pointer rounded-3xl glass-card p-2 shadow-sm hover:shadow-md transition-all duration-300"
+        className="group flex flex-col cursor-pointer rounded-3xl bg-card border border-border/50 p-2 shadow-sm hover:shadow-md transition-all duration-300"
         onClick={handleCardClick}
       >
         {/* Image — separated, fully rounded card */}
-        <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
+        <div className="relative overflow-hidden rounded-2xl aspect-square">
           <img
             src={restaurant.image}
             alt={restaurant.name}
