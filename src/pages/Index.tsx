@@ -131,40 +131,42 @@ const Index = () => {
 
           {/* Categorías como tiles con ícono */}
           <section className="mb-5 mt-2">
-            <h2 className="font-display text-xl font-bold tracking-tight text-foreground mb-3 px-1">
-              Categorías
-            </h2>
-            <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide py-2">
-              <div className="flex gap-3 min-w-max">
-                {categories.map((category) => {
-                  const meta = getCategoryMeta(category);
-                  const active = selectedCategory === category;
-                  const label = category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1);
-                  return (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className="flex flex-col items-center gap-1.5 w-[72px] flex-shrink-0 group"
-                    >
-                      <div
-                        className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-sm transition-all duration-200 ${meta.bg} ${
-                          active
-                            ? "ring-2 ring-primary scale-105"
-                            : "ring-1 ring-white/40 group-hover:scale-105"
-                        }`}
+            <div className="bg-card -mx-4 px-4 py-3 rounded-b-2xl shadow-sm">
+              <h2 className="font-display text-lg font-bold tracking-tight text-foreground mb-2 px-1">
+                Categorías
+              </h2>
+              <div className="overflow-x-auto scrollbar-hide py-1">
+                <div className="flex gap-2 min-w-max">
+                  {categories.map((category) => {
+                    const meta = getCategoryMeta(category);
+                    const active = selectedCategory === category;
+                    const label = category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1);
+                    return (
+                      <button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className="flex flex-col items-center gap-1 w-[60px] flex-shrink-0 group"
                       >
-                        <span className={`cat-icon cat-anim-${meta.anim}`}>{meta.emoji}</span>
-                      </div>
-                      <span
-                        className={`text-[11px] font-semibold text-center leading-tight ${
-                          active ? "text-primary" : "text-foreground/80"
-                        }`}
-                      >
-                        {label}
-                      </span>
-                    </button>
-                  );
-                })}
+                        <div
+                          className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-all duration-200 ${meta.bg} ${
+                            active
+                              ? "ring-2 ring-primary scale-105"
+                              : "ring-1 ring-border/50 group-hover:scale-105"
+                          }`}
+                        >
+                          <span className={`cat-icon cat-anim-${meta.anim}`}>{meta.emoji}</span>
+                        </div>
+                        <span
+                          className={`text-[10px] font-semibold text-center leading-tight ${
+                            active ? "text-primary" : "text-foreground/80"
+                          }`}
+                        >
+                          {label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </section>
