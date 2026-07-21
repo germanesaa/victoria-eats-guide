@@ -5,7 +5,6 @@ import PromoBanner from "@/components/PromoBanner";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
-import foodPatternBg from "@/assets/food-pattern-bg.png.asset.json";
 import quecomerLogo from "@/assets/quecomer-logo-green.png.asset.json";
 import { getCategoryMeta, getAllCategories } from "@/lib/categoryMeta";
 
@@ -74,29 +73,34 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen relative">
-      {/* WhatsApp-style tiled food pattern background */}
-      <div
-        className="fixed inset-0 -z-20 pointer-events-none"
-        style={{
-          backgroundImage: `url(${foodPatternBg.url})`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "420px auto",
-        }}
-      />
-      {/* Soft green tint overlay for brand cohesion */}
-      <div className="fixed inset-0 -z-10 pointer-events-none bg-gradient-to-br from-green-100/40 via-emerald-50/30 to-lime-100/30 dark:from-green-950/70 dark:via-emerald-950/60 dark:to-lime-950/70" />
-      {/* Ambient blurred blobs for liquid feel */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-green-300/30 dark:bg-green-700/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-0 w-80 h-80 bg-emerald-300/25 dark:bg-emerald-700/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/4 w-72 h-72 bg-lime-300/20 dark:bg-lime-700/15 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen bg-card relative">
+      {/* Colored brand header — top half of the two-tone layout */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-b-3xl shadow-md">
+        <div className="container mx-auto h-full px-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 bg-card rounded-full p-1.5 flex items-center justify-center shadow-sm">
+              <img
+                src={quecomerLogo.url}
+                alt="QuéComer"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="font-display text-lg font-bold text-primary-foreground tracking-tight">
+                Qué Comer
+              </span>
+              <span className="text-[10px] text-primary-foreground/80 font-medium">
+                Descubre restaurantes
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
 
-      {/* Status filter chip (top, only when active) */}
+      {/* Status filter chip (below header, only when active) */}
       {selectedStatus !== "all" && (
-        <div className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-          <div className="glass px-4 py-2 flex items-center gap-2">
+        <div className={`fixed top-20 left-0 right-0 z-40 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+          <div className="bg-card/90 backdrop-blur border-b border-border/40 px-4 py-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Filtrando por estado:</span>
             <button
               onClick={() => setSelectedStatus("all")}
@@ -114,59 +118,45 @@ const Index = () => {
         <PromoBanner />
       </div>
 
-      {/* Main Content */}
+      {/* Main Content — white bottom area */}
       <main className="pt-24 pb-40">
         <div className="container mx-auto px-4">
-          {/* Logo + brand name top-left */}
-          <div className="fixed top-3 left-4 z-40 flex items-center gap-2.5 glass px-3 py-2 rounded-full">
-            <img
-              src={quecomerLogo.url}
-              alt="QuéComer"
-              className="w-9 h-9 object-contain"
-            />
-            <span className="font-display text-base font-semibold text-foreground tracking-tight">
-              Qué Comer
-            </span>
-          </div>
-
           {/* Categorías como tiles con ícono */}
           <section className="mb-5 mt-2">
-            <div className="bg-card -mx-4 px-4 py-3 rounded-b-2xl shadow-sm">
-              <h2 className="font-display text-lg font-bold tracking-tight text-foreground mb-2 px-1">
-                Categorías
-              </h2>
-              <div className="overflow-x-auto scrollbar-hide py-1">
-                <div className="flex gap-2 min-w-max">
-                  {categories.map((category) => {
-                    const meta = getCategoryMeta(category);
-                    const active = selectedCategory === category;
-                    const label = category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1);
-                    return (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className="flex flex-col items-center gap-1 w-[60px] flex-shrink-0 group"
+            <h2 className="font-display text-lg font-bold tracking-tight text-foreground mb-2 px-1">
+              Categorías
+            </h2>
+            <div className="overflow-x-auto scrollbar-hide py-1">
+              <div className="flex gap-2 min-w-max">
+                {categories.map((category) => {
+                  const meta = getCategoryMeta(category);
+                  const active = selectedCategory === category;
+                  const label = category === "all" ? "Todos" : category.charAt(0).toUpperCase() + category.slice(1);
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className="flex flex-col items-center gap-1 w-[60px] flex-shrink-0 group"
+                    >
+                      <div
+                        className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-all duration-200 ${meta.bg} ${
+                          active
+                            ? "ring-2 ring-primary scale-105"
+                            : "ring-1 ring-border/50 group-hover:scale-105"
+                        }`}
                       >
-                        <div
-                          className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-all duration-200 ${meta.bg} ${
-                            active
-                              ? "ring-2 ring-primary scale-105"
-                              : "ring-1 ring-border/50 group-hover:scale-105"
-                          }`}
-                        >
-                          <span className={`cat-icon cat-anim-${meta.anim}`}>{meta.emoji}</span>
-                        </div>
-                        <span
-                          className={`text-[10px] font-semibold text-center leading-tight ${
-                            active ? "text-primary" : "text-foreground/80"
-                          }`}
-                        >
-                          {label}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+                        <span className={`cat-icon cat-anim-${meta.anim}`}>{meta.emoji}</span>
+                      </div>
+                      <span
+                        className={`text-[10px] font-semibold text-center leading-tight ${
+                          active ? "text-primary" : "text-foreground/80"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </section>
