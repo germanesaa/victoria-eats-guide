@@ -209,7 +209,7 @@ const Index = () => {
 
       {/* Fixed Bottom: Search bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
-        <div className="glass-strong border-t border-border/40">
+        <div className="bg-card border-t border-border/40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           <div className="container mx-auto px-4 py-3">
             <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </div>
