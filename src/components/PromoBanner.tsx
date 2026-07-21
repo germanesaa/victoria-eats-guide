@@ -51,7 +51,7 @@ const PromoBanner = () => {
   const s = sizeConfig[banner.size];
 
   return (
-    <div className={`relative glass-card overflow-hidden mx-4 mb-2 rounded-xl ${s.container}`}>
+    <div className={`relative bg-card border border-border/50 overflow-hidden mx-4 mb-2 rounded-xl ${s.container}`}>
       <button
         onClick={() => setDismissed(true)}
         className="absolute top-1 right-1 z-10 p-0.5 rounded-full bg-background/60 backdrop-blur-sm text-foreground/70 hover:text-foreground hover:bg-background/80 transition-all"
