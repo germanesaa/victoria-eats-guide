@@ -64,6 +64,8 @@
     --border: 220 13% 20%;
     --input: 220 13% 20%;
     --ring: 152 94% 39%;
+    --primary-dark: 155 80% 28%;
+    --primary-dark-foreground: 0 0% 100%;
 
     /* Dark mode glass tokens */
     --glass-bg: 0 0% 100% / 0.06;
