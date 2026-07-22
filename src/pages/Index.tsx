@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchBar from "@/components/SearchBar";
 import PromoBanner from "@/components/PromoBanner";
+import InstallPrompt from "@/components/InstallPrompt";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
@@ -127,7 +128,7 @@ const Index = () => {
               Categorías
             </h2>
             <div className="overflow-x-auto scrollbar-hide py-1">
-              <div className="flex gap-2 min-w-max">
+              <div className="flex gap-2 min-w-max px-1 py-2">
                 {categories.map((category) => {
                   const meta = getCategoryMeta(category);
                   const active = selectedCategory === category;
@@ -136,10 +137,10 @@ const Index = () => {
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className="flex flex-col items-center gap-1 w-[60px] flex-shrink-0 group"
+                      className="flex flex-col items-center gap-1 w-[56px] flex-shrink-0 group"
                     >
                       <div
-                        className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-all duration-200 ${meta.bg} ${
+                        className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-sm transition-all duration-200 ${meta.bg} ${
                           active
                             ? "ring-2 ring-primary scale-105"
                             : "ring-1 ring-border/50 group-hover:scale-105"
@@ -205,6 +206,8 @@ const Index = () => {
           </div>
         </div>
       </div>
+
+      <InstallPrompt />
     </div>
   );
 };
