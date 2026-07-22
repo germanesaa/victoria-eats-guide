@@ -53,6 +53,25 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Keep fixed bottom bars glued above the on-screen keyboard on mobile.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const root = document.documentElement;
+    const update = () => {
+      const offset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      root.style.setProperty("--kb-offset", `${offset}px`);
+    };
+    update();
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+      root.style.setProperty("--kb-offset", "0px");
+    };
+  }, []);
+
   const filteredRestaurants = restaurantsWithStatus
     .filter(restaurant => {
       const allCats = getAllCategories(restaurant.category, restaurant.categories);
@@ -199,7 +218,10 @@ const Index = () => {
       </main>
 
       {/* Fixed Bottom: Search bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50">
+      <div
+        className="fixed left-0 right-0 z-50"
+        style={{ bottom: "var(--kb-offset, 0px)" }}
+      >
         <div className="bg-card border-t border-border/40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           <div className="container mx-auto px-4 py-3">
             <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
