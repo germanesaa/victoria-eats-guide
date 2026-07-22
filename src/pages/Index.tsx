@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
-import SearchBar from "@/components/SearchBar";
+import SearchOverlay from "@/components/SearchOverlay";
+import { Search } from "lucide-react";
 import PromoBanner from "@/components/PromoBanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import { useRestaurants } from "@/hooks/useRestaurants";
@@ -14,6 +15,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState<RestaurantStatus | "all">("all");
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const { restaurants } = useRestaurants();
 
@@ -224,10 +226,29 @@ const Index = () => {
       >
         <div className="bg-card border-t border-border/40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           <div className="container mx-auto px-4 py-3">
-            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="relative w-full h-11 pl-10 pr-4 rounded-full border border-border/50 bg-background text-left text-sm text-muted-foreground hover:border-primary/50 transition"
+            >
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              {searchTerm ? (
+                <span className="text-foreground truncate block">{searchTerm}</span>
+              ) : (
+                "Buscar restaurantes, comida, ubicación..."
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      <SearchOverlay
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        restaurants={restaurantsWithStatus}
+      />
 
       <InstallPrompt />
     </div>
