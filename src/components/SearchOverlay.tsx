@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Search, X, MapPin } from "lucide-react";
+import { ArrowLeft, Search, X, MapPin, ChevronRight } from "lucide-react";
 import MenuModal from "./MenuModal";
 import { getAllCategories, getCategoryMeta } from "@/lib/categoryMeta";
 
@@ -117,7 +117,7 @@ const SearchOverlay = ({ open, onClose, searchTerm, onSearchChange, restaurants 
                   <button
                     type="button"
                     onClick={() => setSelected(r)}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 active:bg-muted transition"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-muted/50 active:bg-muted active:scale-[0.99] transition"
                   >
                     <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
                       {r.image && (
@@ -140,6 +140,7 @@ const SearchOverlay = ({ open, onClose, searchTerm, onSearchChange, restaurants 
                         </div>
                       )}
                     </div>
+                    <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                   </button>
                 </li>
               );
