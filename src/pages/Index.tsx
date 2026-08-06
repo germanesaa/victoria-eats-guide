@@ -4,6 +4,7 @@ import SearchOverlay from "@/components/SearchOverlay";
 import { Search } from "lucide-react";
 import PromoBanner from "@/components/PromoBanner";
 import InstallPrompt from "@/components/InstallPrompt";
+import NotificationOptIn from "@/components/NotificationOptIn";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { notificationService } from "@/services/notificationService";
@@ -251,6 +252,7 @@ const Index = () => {
       />
 
       <InstallPrompt />
+      <NotificationOptIn />
     </div>
   );
 };
