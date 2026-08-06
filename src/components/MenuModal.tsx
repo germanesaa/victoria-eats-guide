@@ -1,6 +1,6 @@
 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Clock, MapPin, Phone, Utensils, ExternalLink, X } from "lucide-react";
+import { Clock, MapPin, Phone, Utensils, ExternalLink, X, Instagram } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -18,6 +18,7 @@ interface Restaurant {
   hours: string;
   location: string;
   phone: string;
+  instagram?: string;
   menuUrl?: string;
   description?: string;
   menuCategories?: MenuCategory[];
@@ -45,6 +46,15 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
     const whatsappUrl = `https://wa.me/${restaurant.phone}?text=${message}`;
     window.open(whatsappUrl, '_blank');
   };
+
+  const instagramUrl = (() => {
+    const raw = (restaurant.instagram || "").trim();
+    if (!raw) return "";
+    if (/^https?:\/\//i.test(raw)) return raw;
+    return `https://instagram.com/${raw.replace(/^@/, "")}`;
+  })();
+
+  const handleInstagramClick = () => window.open(instagramUrl, "_blank", "noopener,noreferrer");
 
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={onClose}>
@@ -137,6 +147,15 @@ const MenuModal = ({ restaurant, isOpen, onClose }: MenuModalProps) => {
               >
                 <Phone className="w-5 h-5" />
               </button>
+              {instagramUrl && (
+                <button
+                  onClick={handleInstagramClick}
+                  aria-label="Instagram"
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white transition-all shadow-lg bg-[linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)] hover:brightness-110"
+                >
+                  <Instagram className="w-5 h-5" />
+                </button>
+              )}
             </div>
           </div>
         </div>

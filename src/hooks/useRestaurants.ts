@@ -12,6 +12,7 @@ type Row = {
   detailed_hours: any;
   location: string;
   phone: string;
+  instagram: string | null;
   menu_url: string | null;
   description: string | null;
   is_hot: boolean;
@@ -29,6 +30,7 @@ const rowToRestaurant = (r: Row): Restaurant => ({
   detailedHours: (r.detailed_hours || {}) as RestaurantHours,
   location: r.location || "",
   phone: r.phone || "",
+  instagram: r.instagram || "",
   menuUrl: r.menu_url || "",
   description: r.description || "",
   isHot: !!r.is_hot,
@@ -45,6 +47,7 @@ const restaurantToRow = (r: Omit<Restaurant, "id"> & { id?: string }) => ({
   detailed_hours: r.detailedHours || {},
   location: r.location || "",
   phone: r.phone || "",
+  instagram: r.instagram || "",
   menu_url: r.menuUrl || "",
   description: r.description || "",
   is_hot: !!r.isHot,

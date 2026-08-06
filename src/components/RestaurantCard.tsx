@@ -15,6 +15,7 @@ interface Restaurant {
   hours: string;
   location: string;
   phone: string;
+  instagram?: string;
   menuUrl?: string;
   description?: string;
   isHot?: boolean;

@@ -18,6 +18,7 @@ export interface Restaurant {
   detailedHours: RestaurantHours;
   location: string;
   phone: string;
+  instagram?: string;
   menuUrl?: string;
   description?: string;
   isHot?: boolean;

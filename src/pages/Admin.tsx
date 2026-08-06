@@ -15,6 +15,7 @@ import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
 import { isValidBannerUrl } from "@/utils/urlValidation";
 import { PREDEFINED_CATEGORIES, getCategoryMeta } from "@/lib/categoryMeta";
 import { supabase } from "@/integrations/supabase/client";
+import PushNotificationsPanel from "@/components/admin/PushNotificationsPanel";
 import { lovable } from "@/integrations/lovable/index";
 import type { Session } from "@supabase/supabase-js";
 
@@ -133,6 +134,7 @@ const Admin = () => {
     },
     location: "",
     phone: "",
+    instagram: "",
     menuUrl: "",
     description: "",
     isHot: false,
@@ -284,6 +286,7 @@ const Admin = () => {
       image: restaurant.image,
       hours: restaurant.hours, detailedHours: restaurant.detailedHours, location: restaurant.location,
       phone: restaurant.phone, menuUrl: restaurant.menuUrl || "", description: restaurant.description || "",
+      instagram: restaurant.instagram || "",
       isHot: restaurant.isHot || false, priority: restaurant.priority,
       menuCategories: restaurant.menuCategories || []
     });
@@ -473,6 +476,15 @@ const Admin = () => {
             placeholder="https://ejemplo.com/menu"
           />
         </div>
+        <div>
+          <Label htmlFor="instagram">Instagram (opcional)</Label>
+          <Input
+            id="instagram"
+            value={restaurant.instagram || ""}
+            onChange={(e) => setRestaurant({...restaurant, instagram: e.target.value})}
+            placeholder="@mirestaurante o https://instagram.com/mirestaurante"
+          />
+        </div>
         <div className="flex items-center space-x-2">
           <Switch
             id="isHot"
@@ -593,6 +605,8 @@ const Admin = () => {
         </div>
 
         {/* Banner Management */}
+        <PushNotificationsPanel />
+
         <Card className="mb-6 border-primary/30">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
