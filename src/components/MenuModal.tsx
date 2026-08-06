@@ -1,6 +1,6 @@
 
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Clock, MapPin, Phone, Utensils, ExternalLink, X } from "lucide-react";
+import { Clock, MapPin, Phone, Utensils, ExternalLink, X, Instagram } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
