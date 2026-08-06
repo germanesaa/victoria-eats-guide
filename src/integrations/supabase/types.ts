@@ -56,6 +56,69 @@ export type Database = {
         }
         Relationships: []
       }
+      push_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          failed_count: number
+          id: string
+          image: string
+          sent_count: number
+          title: string
+          url: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          image?: string
+          sent_count?: number
+          title: string
+          url?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          failed_count?: number
+          id?: string
+          image?: string
+          sent_count?: number
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_agent: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_agent?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       restaurants: {
         Row: {
           categories: string[]
@@ -66,6 +129,7 @@ export type Database = {
           hours: string
           id: string
           image: string
+          instagram: string | null
           is_hot: boolean
           location: string
           menu_categories: Json
@@ -84,6 +148,7 @@ export type Database = {
           hours?: string
           id?: string
           image?: string
+          instagram?: string | null
           is_hot?: boolean
           location?: string
           menu_categories?: Json
@@ -102,6 +167,7 @@ export type Database = {
           hours?: string
           id?: string
           image?: string
+          instagram?: string | null
           is_hot?: boolean
           location?: string
           menu_categories?: Json
