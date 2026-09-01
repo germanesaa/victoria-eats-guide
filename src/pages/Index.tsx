@@ -7,7 +7,6 @@ import InstallPrompt from "@/components/InstallPrompt";
 import NotificationOptIn from "@/components/NotificationOptIn";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
-import { notificationService } from "@/services/notificationService";
 import quecomerLogo from "@/assets/quecomer-logo-green.png.asset.json";
 import { getCategoryMeta, getAllCategories } from "@/lib/categoryMeta";
 
