@@ -20,6 +20,32 @@ const Index = () => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const { restaurants } = useRestaurants();
+  const { toast } = useToast();
+  const {
+    supported: pushSupported,
+    subscribed: pushSubscribed,
+    loading: pushLoading,
+    subscribe: pushSubscribe,
+    unsubscribe: pushUnsubscribe,
+  } = usePushNotifications();
+
+  const handleToggleNotifications = async () => {
+    if (pushSubscribed) {
+      await pushUnsubscribe();
+      toast({ title: "Notificaciones desactivadas", description: "Ya no recibirás avisos de promociones." });
+    } else {
+      const ok = await pushSubscribe();
+      toast(
+        ok
+          ? { title: "¡Notificaciones activadas!", description: "Te avisaremos de las promociones." }
+          : {
+              title: "No se activaron",
+              description: "Permite las notificaciones en tu navegador.",
+              variant: "destructive" as const,
+            }
+      );
+    }
+  };
 
   // Derive categories from actual restaurant data (primary + extras) so nothing is missed
   const dataCategories: string[] = Array.from(
