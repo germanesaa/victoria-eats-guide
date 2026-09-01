@@ -118,7 +118,7 @@ const Index = () => {
 
       {/* Status filter chip (below header, only when active) */}
       {selectedStatus !== "all" && (
-        <div className={`fixed top-20 left-0 right-0 z-40 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className={`fixed top-14 left-0 right-0 z-40 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
           <div className="bg-card/90 backdrop-blur border-b border-border/40 px-4 py-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Filtrando por estado:</span>
             <button
@@ -138,7 +138,7 @@ const Index = () => {
       </div>
 
       {/* Main Content — white bottom area */}
-      <main className="pt-24 pb-40">
+      <main className="pt-16 pb-40">
         <div className="container mx-auto px-4">
           {/* Categorías como tiles con ícono */}
           <section className="mb-5 mt-2">
