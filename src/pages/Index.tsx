@@ -30,15 +30,6 @@ const Index = () => {
 
   const restaurantsWithStatus = useRestaurantStatus(restaurants);
 
-  useEffect(() => {
-    notificationService.initialize().then((success) => {
-      if (success) {
-        console.log('Push notifications initialized successfully');
-      } else {
-        console.log('Push notifications not available or permission denied');
-      }
-    });
-  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
