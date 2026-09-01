@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchOverlay from "@/components/SearchOverlay";
-import { Search } from "lucide-react";
+import { Search, Bell, BellOff, BellRing } from "lucide-react";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useToast } from "@/hooks/use-toast";
 import PromoBanner from "@/components/PromoBanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import NotificationOptIn from "@/components/NotificationOptIn";
@@ -18,6 +20,32 @@ const Index = () => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   const { restaurants } = useRestaurants();
+  const { toast } = useToast();
+  const {
+    supported: pushSupported,
+    subscribed: pushSubscribed,
+    loading: pushLoading,
+    subscribe: pushSubscribe,
+    unsubscribe: pushUnsubscribe,
+  } = usePushNotifications();
+
+  const handleToggleNotifications = async () => {
+    if (pushSubscribed) {
+      await pushUnsubscribe();
+      toast({ title: "Notificaciones desactivadas", description: "Ya no recibirás avisos de promociones." });
+    } else {
+      const ok = await pushSubscribe();
+      toast(
+        ok
+          ? { title: "¡Notificaciones activadas!", description: "Te avisaremos de las promociones." }
+          : {
+              title: "No se activaron",
+              description: "Permite las notificaciones en tu navegador.",
+              variant: "destructive" as const,
+            }
+      );
+    }
+  };
 
   // Derive categories from actual restaurant data (primary + extras) so nothing is missed
   const dataCategories: string[] = Array.from(
@@ -102,6 +130,24 @@ const Index = () => {
               Qué Comer
             </span>
           </div>
+          {pushSupported && (
+            <button
+              type="button"
+              onClick={handleToggleNotifications}
+              disabled={pushLoading}
+              aria-label={pushSubscribed ? "Desactivar notificaciones" : "Activar notificaciones"}
+              title={pushSubscribed ? "Desactivar notificaciones" : "Activar notificaciones"}
+              className="w-9 h-9 rounded-full bg-card/90 flex items-center justify-center shadow-sm text-primary transition active:scale-95 disabled:opacity-60"
+            >
+              {pushLoading ? (
+                <BellRing className="w-4 h-4 animate-pulse" />
+              ) : pushSubscribed ? (
+                <Bell className="w-4 h-4" />
+              ) : (
+                <BellOff className="w-4 h-4" />
+              )}
+            </button>
+          )}
         </div>
       </header>
 
