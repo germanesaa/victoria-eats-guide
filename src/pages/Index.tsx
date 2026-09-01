@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import SearchOverlay from "@/components/SearchOverlay";
-import { Search } from "lucide-react";
+import { Search, Bell, BellOff, BellRing } from "lucide-react";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useToast } from "@/hooks/use-toast";
 import PromoBanner from "@/components/PromoBanner";
 import InstallPrompt from "@/components/InstallPrompt";
 import NotificationOptIn from "@/components/NotificationOptIn";
