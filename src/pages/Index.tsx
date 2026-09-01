@@ -98,27 +98,23 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-card relative">
       {/* Colored brand header — top half of the two-tone layout */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-b-3xl shadow-md">
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-gradient-to-br from-primary/70 to-primary-dark/70 backdrop-blur-xl rounded-b-2xl shadow-sm border-b border-primary-foreground/10">
         <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-card rounded-full p-1.5 flex items-center justify-center shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-card/90 rounded-full p-1 flex items-center justify-center shadow-sm">
               <img
                 src={quecomerLogo.url}
                 alt="QuéComer"
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-lg font-bold text-primary-foreground tracking-tight">
-                Qué Comer
-              </span>
-              <span className="text-[10px] text-primary-foreground/80 font-medium">
-                Descubre restaurantes
-              </span>
-            </div>
+            <span className="font-display text-base font-bold text-primary-foreground tracking-tight">
+              Qué Comer
+            </span>
           </div>
         </div>
       </header>
+
 
       {/* Status filter chip (below header, only when active) */}
       {selectedStatus !== "all" && (
