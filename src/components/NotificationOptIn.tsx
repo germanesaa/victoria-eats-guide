@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 const DISMISS_KEY = "quecomer-push-dismissed";
 
 const NotificationOptIn = () => {
-  const { supported, permission, subscribed, loading, subscribe } = usePushNotifications();
+  const { supported, permission, subscribed, loading, error, subscribe } = usePushNotifications();
   const { toast } = useToast();
   const [dismissed, setDismissed] = useState(true);
 
@@ -22,7 +22,11 @@ const NotificationOptIn = () => {
     toast(
       ok
         ? { title: "¡Listo!", description: "Te avisaremos de las promociones." }
-        : { title: "No se activaron", description: "Permite las notificaciones en tu navegador.", variant: "destructive" }
+        : {
+            title: "No se activaron",
+            description: error || "Permite las notificaciones en tu navegador.",
+            variant: "destructive" as const,
+          }
     );
   };
 

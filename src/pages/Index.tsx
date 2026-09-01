@@ -7,7 +7,6 @@ import InstallPrompt from "@/components/InstallPrompt";
 import NotificationOptIn from "@/components/NotificationOptIn";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
-import { notificationService } from "@/services/notificationService";
 import quecomerLogo from "@/assets/quecomer-logo-green.png.asset.json";
 import { getCategoryMeta, getAllCategories } from "@/lib/categoryMeta";
 
@@ -30,15 +29,6 @@ const Index = () => {
 
   const restaurantsWithStatus = useRestaurantStatus(restaurants);
 
-  useEffect(() => {
-    notificationService.initialize().then((success) => {
-      if (success) {
-        console.log('Push notifications initialized successfully');
-      } else {
-        console.log('Push notifications not available or permission denied');
-      }
-    });
-  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -98,31 +88,27 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-card relative">
       {/* Colored brand header — top half of the two-tone layout */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-b-3xl shadow-md">
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-gradient-to-br from-primary/70 to-primary-dark/70 backdrop-blur-xl rounded-b-2xl shadow-sm border-b border-primary-foreground/10">
         <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-card rounded-full p-1.5 flex items-center justify-center shadow-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-card/90 rounded-full p-1 flex items-center justify-center shadow-sm">
               <img
                 src={quecomerLogo.url}
                 alt="QuéComer"
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-lg font-bold text-primary-foreground tracking-tight">
-                Qué Comer
-              </span>
-              <span className="text-[10px] text-primary-foreground/80 font-medium">
-                Descubre restaurantes
-              </span>
-            </div>
+            <span className="font-display text-base font-bold text-primary-foreground tracking-tight">
+              Qué Comer
+            </span>
           </div>
         </div>
       </header>
 
+
       {/* Status filter chip (below header, only when active) */}
       {selectedStatus !== "all" && (
-        <div className={`fixed top-20 left-0 right-0 z-40 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className={`fixed top-14 left-0 right-0 z-40 transition-transform duration-300 ${headerVisible ? 'translate-y-0' : '-translate-y-full'}`}>
           <div className="bg-card/90 backdrop-blur border-b border-border/40 px-4 py-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Filtrando por estado:</span>
             <button
@@ -142,7 +128,7 @@ const Index = () => {
       </div>
 
       {/* Main Content — white bottom area */}
-      <main className="pt-24 pb-40">
+      <main className="pt-16 pb-40">
         <div className="container mx-auto px-4">
           {/* Categorías como tiles con ícono */}
           <section className="mb-5 mt-2">
