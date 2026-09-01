@@ -122,7 +122,7 @@ export const usePushNotifications = () => {
           auth: json.keys?.auth || arrayBufferToBase64Url(sub.getKey("auth")),
           user_agent: navigator.userAgent.slice(0, 255),
         } as any,
-        { onConflict: "endpoint" } as any
+        { onConflict: "endpoint", ignoreDuplicates: true } as any
       );
       if (dbError) {
         setError(dbError.message);
