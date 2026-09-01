@@ -130,6 +130,24 @@ const Index = () => {
               Qué Comer
             </span>
           </div>
+          {pushSupported && (
+            <button
+              type="button"
+              onClick={handleToggleNotifications}
+              disabled={pushLoading}
+              aria-label={pushSubscribed ? "Desactivar notificaciones" : "Activar notificaciones"}
+              title={pushSubscribed ? "Desactivar notificaciones" : "Activar notificaciones"}
+              className="w-9 h-9 rounded-full bg-card/90 flex items-center justify-center shadow-sm text-primary transition active:scale-95 disabled:opacity-60"
+            >
+              {pushLoading ? (
+                <BellRing className="w-4 h-4 animate-pulse" />
+              ) : pushSubscribed ? (
+                <Bell className="w-4 h-4" />
+              ) : (
+                <BellOff className="w-4 h-4" />
+              )}
+            </button>
+          )}
         </div>
       </header>
 
