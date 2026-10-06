@@ -249,6 +249,12 @@ const Index = () => {
               <p className="text-muted-foreground">Intenta con otros términos de búsqueda</p>
             </div>
           )}
+
+          <footer className="mt-10 border-t border-border px-2 py-6 text-center">
+            <p className="text-sm font-medium leading-relaxed text-foreground">
+              © 2026 quecomerve.com - Operado por German jose esaa alezard.
+            </p>
+          </footer>
         </div>
       </main>
 
