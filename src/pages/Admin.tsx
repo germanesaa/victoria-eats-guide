@@ -16,7 +16,6 @@ import { isValidBannerUrl } from "@/utils/urlValidation";
 import { PREDEFINED_CATEGORIES, getCategoryMeta } from "@/lib/categoryMeta";
 import { supabase } from "@/integrations/supabase/client";
 import PushNotificationsPanel from "@/components/admin/PushNotificationsPanel";
-import { lovable } from "@/integrations/lovable/index";
 import type { Session } from "@supabase/supabase-js";
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
@@ -42,8 +41,9 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
     setError("");
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: `${window.location.origin}/admin` },
     });
     if (error) {
       setError("Error al iniciar sesión con Google");
