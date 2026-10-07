@@ -179,10 +179,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-[70] bg-gradient-to-br from-primary/70 to-primary-dark/70">
-        <div className="mx-auto max-w-lg px-4 pb-3 pt-3">
-          <img src="/brand/logo-original.png" alt="QuéComer" className="mb-2 h-8 w-auto dark:hidden" />
-          <img src="/brand/logo-blanco.png" alt="" className="mb-2 hidden h-8 w-auto dark:block" />
+      <header className="sticky top-0 z-[70] bg-[#47542f]">
+        <div className="mx-auto max-w-lg px-4 pb-4 pt-4">
+          <img src="/brand/logo-blanco.png" alt="QuéComer" className="mb-3 h-14 w-auto" />
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
@@ -227,7 +226,7 @@ const Index = () => {
                   type="button"
                   onClick={() => setMode("light")}
                   className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium ${
-                    theme === "light" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                    theme === "light" ? "bg-[#709a2d] text-[#262826]" : "text-[#262826] ring-1 ring-[#47542f] dark:text-[#e6d7c8] dark:ring-[#e6d7c8]"
                   }`}
                 >
                   <Sun className="h-4 w-4" />
@@ -237,7 +236,7 @@ const Index = () => {
                   type="button"
                   onClick={() => setMode("dark")}
                   className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium ${
-                    theme === "dark" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                    theme === "dark" ? "bg-[#709a2d] text-[#262826]" : "text-[#262826] ring-1 ring-[#47542f] dark:text-[#e6d7c8] dark:ring-[#e6d7c8]"
                   }`}
                 >
                   <Moon className="h-4 w-4" />
@@ -266,7 +265,7 @@ const Index = () => {
           <div className="space-y-4">
             {directoryGroups.map(([letter, group]) => (
               <section key={letter}>
-                <h3 className="sticky top-28 z-10 bg-background/95 py-1 text-xs font-semibold text-muted-foreground">{letter}</h3>
+                <h3 className="sticky top-36 z-10 bg-[#e6d7c8] py-1 text-xs font-semibold text-[#47542f] dark:bg-[#262826] dark:text-[#e6d7c8]">{letter}</h3>
                 <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
                   {group.map((restaurant) => (
                     <li key={restaurant.id}>

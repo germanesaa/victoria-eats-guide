@@ -1,6 +1,16 @@
 
 import type { Config } from "tailwindcss";
 
+/** Keeps the hex in CSS and still allows bg-token/50 utilities. */
+const exact =
+  (variable: string) =>
+  ({ opacityValue }: { opacityValue?: string | number }) => {
+    if (opacityValue === undefined) return `var(${variable})`;
+    const numeric = typeof opacityValue === "number" ? opacityValue : Number(opacityValue);
+    const amount = Number.isFinite(numeric) ? `${numeric * 100}%` : `calc(${opacityValue} * 100%)`;
+    return `color-mix(in srgb, var(${variable}) ${amount}, transparent)`;
+  };
+
 export default {
 	darkMode: ["class"],
 	content: [
@@ -24,51 +34,51 @@ export default {
 				'display': ['DM Sans', 'Inter', 'sans-serif'],
 			},
 			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
+				border: exact("--border"),
+				input: exact("--input"),
+				ring: exact("--ring"),
+				background: exact("--background"),
+				foreground: exact("--foreground"),
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))',
-					dark: 'hsl(var(--primary-dark))',
-					'dark-foreground': 'hsl(var(--primary-dark-foreground))'
+					DEFAULT: exact("--primary"),
+					foreground: exact("--primary-foreground"),
+					dark: exact("--primary-dark"),
+					'dark-foreground': exact("--primary-dark-foreground"),
 				},
 				secondary: {
-					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))'
+					DEFAULT: exact("--secondary"),
+					foreground: exact("--secondary-foreground"),
 				},
 				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
+					DEFAULT: exact("--destructive"),
+					foreground: exact("--destructive-foreground"),
 				},
 				muted: {
-					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
+					DEFAULT: exact("--muted"),
+					foreground: exact("--muted-foreground"),
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: exact("--accent"),
+					foreground: exact("--accent-foreground"),
 				},
 				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))'
+					DEFAULT: exact("--popover"),
+					foreground: exact("--popover-foreground"),
 				},
 				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
+					DEFAULT: exact("--card"),
+					foreground: exact("--card-foreground"),
 				},
 				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+					DEFAULT: exact("--sidebar-background"),
+					foreground: exact("--sidebar-foreground"),
+					primary: exact("--sidebar-primary"),
+					"primary-foreground": exact("--sidebar-primary-foreground"),
+					accent: exact("--sidebar-accent"),
+					"accent-foreground": exact("--sidebar-accent-foreground"),
+					border: exact("--sidebar-border"),
+					ring: exact("--sidebar-ring"),
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

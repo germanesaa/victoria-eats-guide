@@ -7,30 +7,38 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 15% 20%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 20%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 20%;
-    --primary: 152 94% 39%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 92%;
-    --secondary-foreground: 220 15% 30%;
-    --muted: 220 14% 94%;
-    --muted-foreground: 220 10% 46%;
-    --accent: 210 20% 96%;
-    --accent-foreground: 220 15% 20%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 90%;
-    --input: 220 13% 90%;
-    --ring: 152 94% 39%;
+    /* Verde lima, verde olivo, gris plomo, crema */
+    --background: #e6d7c8;
+    --foreground: #262826;
+    --card: #e6d7c8;
+    --card-foreground: #262826;
+    --popover: #e6d7c8;
+    --popover-foreground: #262826;
+    --primary: #709a2d;
+    --primary-foreground: #262826;
+    --secondary: #47542f;
+    --secondary-foreground: #e6d7c8;
+    --muted: #e6d7c8;
+    --muted-foreground: #47542f;
+    --accent: #47542f;
+    --accent-foreground: #e6d7c8;
+    --destructive: #262826;
+    --destructive-foreground: #e6d7c8;
+    --border: #47542f;
+    --input: #47542f;
+    --ring: #709a2d;
     --radius: 1rem;
 
-    /* Brand gradient companion */
-    --primary-dark: 155 80% 28%;
-    --primary-dark-foreground: 0 0% 100%;
+    --primary-dark: #47542f;
+    --primary-dark-foreground: #e6d7c8;
+    --sidebar-background: #e6d7c8;
+    --sidebar-foreground: #262826;
+    --sidebar-primary: #709a2d;
+    --sidebar-primary-foreground: #262826;
+    --sidebar-accent: #47542f;
+    --sidebar-accent-foreground: #e6d7c8;
+    --sidebar-border: #47542f;
+    --sidebar-ring: #709a2d;
 
     /* Liquid glass tokens */
     --glass-bg: 0 0% 100% / 0.08;
@@ -45,27 +53,35 @@
   }
 
   .dark {
-    --background: 220 20% 10%;
-    --foreground: 220 15% 90%;
-    --card: 220 20% 14%;
-    --card-foreground: 220 15% 90%;
-    --popover: 220 20% 14%;
-    --popover-foreground: 220 15% 90%;
-    --primary: 152 94% 39%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 18%;
-    --secondary-foreground: 220 15% 80%;
-    --muted: 220 14% 16%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 210 20% 16%;
-    --accent-foreground: 220 15% 90%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 220 13% 20%;
-    --input: 220 13% 20%;
-    --ring: 152 94% 39%;
-    --primary-dark: 155 80% 28%;
-    --primary-dark-foreground: 0 0% 100%;
+    --background: #262826;
+    --foreground: #e6d7c8;
+    --card: #47542f;
+    --card-foreground: #e6d7c8;
+    --popover: #47542f;
+    --popover-foreground: #e6d7c8;
+    --primary: #709a2d;
+    --primary-foreground: #262826;
+    --secondary: #47542f;
+    --secondary-foreground: #e6d7c8;
+    --muted: #262826;
+    --muted-foreground: #e6d7c8;
+    --accent: #709a2d;
+    --accent-foreground: #262826;
+    --destructive: #e6d7c8;
+    --destructive-foreground: #262826;
+    --border: #709a2d;
+    --input: #709a2d;
+    --ring: #709a2d;
+    --primary-dark: #47542f;
+    --primary-dark-foreground: #e6d7c8;
+    --sidebar-background: #262826;
+    --sidebar-foreground: #e6d7c8;
+    --sidebar-primary: #709a2d;
+    --sidebar-primary-foreground: #262826;
+    --sidebar-accent: #47542f;
+    --sidebar-accent-foreground: #e6d7c8;
+    --sidebar-border: #709a2d;
+    --sidebar-ring: #709a2d;
 
     /* Dark mode glass tokens */
     --glass-bg: 0 0% 100% / 0.06;
@@ -95,6 +111,16 @@
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Lima on crema is too faint for small type. Accent text uses olivo, and crema in dark mode. */
+@layer utilities {
+  .text-primary {
+    color: #47542f;
+  }
+  .dark .text-primary {
+    color: #e6d7c8;
+  }
 }
 
 /* Liquid glass utility classes */

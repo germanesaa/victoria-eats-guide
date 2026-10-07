@@ -5,8 +5,8 @@
   "description": "Descubre los mejores restaurantes de La Victoria",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#70992D",
-  "background_color": "#ffffff",
+  "theme_color": "#47542f",
+  "background_color": "#e6d7c8",
   "orientation": "portrait",
   "icons": [
     {

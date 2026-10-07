@@ -17,7 +17,7 @@ const items: { id: AppTab; label: string; icon: typeof Star }[] = [
 
 const BottomNav = ({ tab, onChange }: BottomNavProps) => (
   <nav
-    className="fixed inset-x-0 bottom-0 z-50 border-t border-border/70 bg-card/95 backdrop-blur"
+    className="fixed inset-x-0 bottom-0 z-50 border-t border-[#47542f]/30 bg-[#e6d7c8] dark:border-[#709a2d]/40 dark:bg-[#262826]"
     style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     aria-label="Navegación principal"
   >
@@ -34,9 +34,7 @@ const BottomNav = ({ tab, onChange }: BottomNavProps) => (
               className="relative flex items-center justify-center"
             >
               <span
-                className={`flex h-14 w-14 -translate-y-3 items-center justify-center rounded-full shadow-md ${
-                  active ? "bg-primary text-primary-foreground" : "bg-foreground text-background"
-                }`}
+                className="flex h-14 w-14 -translate-y-3 items-center justify-center rounded-full bg-[#709a2d] text-[#262826] shadow-md"
               >
                 <Search className="h-6 w-6" />
               </span>
@@ -51,7 +49,7 @@ const BottomNav = ({ tab, onChange }: BottomNavProps) => (
             onClick={() => onChange(id)}
             aria-current={active ? "page" : undefined}
             className={`flex flex-col items-center justify-center gap-1 text-[10px] font-medium ${
-              active ? "text-primary" : "text-muted-foreground"
+              active ? "text-[#262826] dark:text-[#709a2d]" : "text-[#47542f] dark:text-[#e6d7c8]"
             }`}
           >
             <Icon className={`h-5 w-5 ${id === "favorites" && active ? "fill-current" : ""}`} />

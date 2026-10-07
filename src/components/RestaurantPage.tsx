@@ -127,7 +127,7 @@ const RestaurantPage = ({
             className="mb-2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card"
             aria-label={favorite ? "Quitar de favoritos" : "Guardar en favoritos"}
           >
-            <Star className={`h-5 w-5 ${favorite ? "fill-amber-400 text-amber-400" : "text-muted-foreground"}`} />
+            <Star className={`h-5 w-5 ${favorite ? "fill-[#47542f] text-[#47542f] dark:fill-[#709a2d] dark:text-[#709a2d]" : "text-[#47542f] dark:text-[#e6d7c8]"}`} />
           </button>
         </div>
 
@@ -135,7 +135,7 @@ const RestaurantPage = ({
         <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
           {average > 0 && (
             <span className="inline-flex items-center gap-1 font-medium text-foreground">
-              <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+              <Star className="h-4 w-4 fill-[#47542f] text-[#47542f] dark:fill-[#709a2d] dark:text-[#709a2d]" />
               {average.toFixed(1)}
             </span>
           )}
@@ -224,7 +224,7 @@ const RestaurantPage = ({
                       {Array.from({ length: 5 }, (_, index) => (
                         <Star
                           key={index}
-                          className={`h-3.5 w-3.5 ${index < review.stars ? "fill-amber-400 text-amber-400" : "text-muted-foreground/40"}`}
+                          className={`h-3.5 w-3.5 ${index < review.stars ? "fill-[#47542f] text-[#47542f] dark:fill-[#709a2d] dark:text-[#709a2d]" : "text-[#47542f]/40 dark:text-[#e6d7c8]/40"}`}
                         />
                       ))}
                     </span>
@@ -250,7 +250,7 @@ const RestaurantPage = ({
                     onClick={() => setStars(value)}
                     className="rounded-md p-1"
                   >
-                    <Star className={`h-7 w-7 ${value <= stars ? "fill-amber-400 text-amber-400" : "text-muted-foreground/50"}`} />
+                    <Star className={`h-7 w-7 ${value <= stars ? "fill-[#47542f] text-[#47542f] dark:fill-[#709a2d] dark:text-[#709a2d]" : "text-[#47542f]/45 dark:text-[#e6d7c8]/45"}`} />
                   </button>
                 );
               })}

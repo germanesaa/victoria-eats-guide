@@ -34,11 +34,11 @@ interface RestaurantCardProps {
 const getStatusColor = (status: RestaurantStatus) => {
   switch (status) {
     case 'open':
-      return 'bg-emerald-500/90 text-white';
+      return 'bg-[#709a2d] text-[#262826]';
     case 'opening-soon':
-      return 'bg-amber-400/90 text-white';
+      return 'bg-[#47542f] text-[#e6d7c8]';
     case 'closed':
-      return 'bg-red-500/80 text-white';
+      return 'bg-[#262826] text-[#e6d7c8]';
     default:
       return 'bg-gray-500/80 text-white';
   }
@@ -88,7 +88,7 @@ const RestaurantCard = ({ restaurant, favorite, onOpen, onToggleFavorite, onCate
           )}
           {restaurant.isHot && (
             <div className="absolute top-2 left-2">
-              <Badge className="bg-red-500/90 text-white flex items-center gap-1 border border-white/30 rounded-full px-2 py-0.5 text-[10px] shadow-lg">
+              <Badge className="flex items-center gap-1 rounded-full border border-[#262826]/20 bg-[#709a2d] px-2 py-0.5 text-[10px] text-[#262826] shadow-lg">
                 <Flame className="w-2.5 h-2.5" />
                 HOT
               </Badge>
@@ -106,7 +106,7 @@ const RestaurantCard = ({ restaurant, favorite, onOpen, onToggleFavorite, onCate
             aria-label={favorite ? "Quitar de favoritos" : "Guardar en favoritos"}
             aria-pressed={favorite}
           >
-            <Star className={`h-4 w-4 ${favorite ? "fill-amber-400 text-amber-400" : "text-foreground/70"}`} />
+            <Star className={`h-4 w-4 ${favorite ? "fill-[#47542f] text-[#47542f] dark:fill-[#709a2d] dark:text-[#709a2d]" : "text-[#47542f] dark:text-[#e6d7c8]"}`} />
           </button>
           {restaurant.phone && (
           <button
