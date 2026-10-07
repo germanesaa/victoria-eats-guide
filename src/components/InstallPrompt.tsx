@@ -59,7 +59,7 @@ const InstallPrompt = () => {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-[60] animate-in slide-in-from-bottom-4">
+    <div className="fixed bottom-28 left-4 right-4 z-[60]">
       <div className="bg-card rounded-2xl shadow-2xl border border-border/60 p-4 flex gap-3 items-start">
         <img
           src="/brand/mark-original.png"

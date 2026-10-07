@@ -36,7 +36,7 @@ const NotificationOptIn = () => {
   };
 
   return (
-    <div className="fixed bottom-24 left-3 right-3 z-[60] mx-auto max-w-md rounded-2xl border border-border/60 bg-card p-3 shadow-lg">
+    <div className="fixed bottom-28 left-3 right-3 z-[60] mx-auto max-w-md rounded-2xl border border-border/60 bg-card p-3 shadow-lg">
       <div className="flex items-start gap-3">
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
           <BellRing className="h-4 w-4" />

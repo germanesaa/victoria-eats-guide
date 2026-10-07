@@ -1,8 +1,6 @@
 
 import { Clock, MapPin, Star, Flame } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import MenuModal from "./MenuModal";
-import { useState } from "react";
 import { RestaurantStatus } from "@/hooks/useRestaurantStatus";
 import { getCategoryMeta, getAllCategories } from "@/lib/categoryMeta";
 
@@ -26,6 +24,9 @@ interface Restaurant {
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
+  favorite?: boolean;
+  onOpen?: () => void;
+  onToggleFavorite?: () => void;
   onCategoryClick?: (category: string) => void;
   onStatusClick?: (status: RestaurantStatus) => void;
 }
@@ -56,15 +57,11 @@ const getStatusText = (status: RestaurantStatus, opensIn?: string) => {
   }
 };
 
-const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: RestaurantCardProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+const RestaurantCard = ({ restaurant, favorite, onOpen, onToggleFavorite, onCategoryClick, onStatusClick }: RestaurantCardProps) => {
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Si el click vino de un botón interactivo (categoría, estado, WhatsApp), no abrir menú
     const target = e.target as HTMLElement;
-    const isInteractive = target.closest('[data-no-menu]');
-    if (isInteractive) return;
-    setIsMenuOpen(true);
+    if (target.closest("[data-no-menu]")) return;
+    onOpen?.();
   };
 
   const handleWhatsAppClick = (e: React.MouseEvent) => {
@@ -77,16 +74,18 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
   return (
     <>
       <div
-        className="group flex flex-col cursor-pointer rounded-3xl bg-card border border-border/50 p-2 shadow-sm hover:shadow-md transition-all duration-300"
+        className="group flex cursor-pointer flex-col rounded-3xl border border-border/50 bg-card p-2 shadow-sm"
         onClick={handleCardClick}
       >
         {/* Image — separated, fully rounded card */}
-        <div className="relative overflow-hidden rounded-2xl aspect-square">
-          <img
-            src={restaurant.image}
-            alt={restaurant.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+        <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted">
+          {restaurant.image ? (
+            <img src={restaurant.image} alt={restaurant.name} className="h-full w-full object-cover" />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <img src="/brand/mark-original.png" alt="" className="h-12 w-12 object-contain opacity-80" />
+            </div>
+          )}
           {restaurant.isHot && (
             <div className="absolute top-2 left-2">
               <Badge className="bg-red-500/90 text-white flex items-center gap-1 border border-white/30 rounded-full px-2 py-0.5 text-[10px] shadow-lg">
@@ -99,14 +98,29 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
           <button
             type="button"
             data-no-menu
+            onClick={(event) => {
+              event.stopPropagation();
+              onToggleFavorite?.();
+            }}
+            className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-background/90"
+            aria-label={favorite ? "Quitar de favoritos" : "Guardar en favoritos"}
+            aria-pressed={favorite}
+          >
+            <Star className={`h-4 w-4 ${favorite ? "fill-amber-400 text-amber-400" : "text-foreground/70"}`} />
+          </button>
+          {restaurant.phone && (
+          <button
+            type="button"
+            data-no-menu
             onClick={handleWhatsAppClick}
-            className="absolute bottom-2 right-2 w-8 h-8 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center shadow-lg shadow-black/20 hover:scale-105 transition-all duration-200"
+            className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#25D366] text-white"
             aria-label="WhatsApp"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.569-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
             </svg>
           </button>
+          )}
         </div>
 
         {/* Info block — compact */}
@@ -116,9 +130,6 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
             <h3 className="font-display text-sm md:text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
               {restaurant.name}
             </h3>
-            {restaurant.isHot && (
-              <Star className="w-3.5 h-3.5 text-amber-400 fill-current flex-shrink-0" />
-            )}
           </div>
 
           {/* Category icons + status pill */}
@@ -134,7 +145,7 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
                     e.stopPropagation();
                     onCategoryClick?.(cat);
                   }}
-                  className={`cat-icon cat-anim-${meta.anim} text-base leading-none`}
+                  className="text-base leading-none"
                   aria-label={`Filtrar por ${cat}`}
                   title={cat}
                 >
@@ -172,11 +183,6 @@ const RestaurantCard = ({ restaurant, onCategoryClick, onStatusClick }: Restaura
         </div>
       </div>
 
-      <MenuModal
-        restaurant={restaurant}
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-      />
     </>
   );
 };
