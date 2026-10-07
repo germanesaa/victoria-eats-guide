@@ -44,3 +44,25 @@ export const validateImageFile = (file: File): { valid: boolean; error?: string 
   
   return { valid: true };
 };
+
+export const PROMO_IMAGE_WIDTH = 1080;
+export const PROMO_IMAGE_HEIGHT = 1920;
+
+export const validatePromoImage = async (file: File): Promise<{ valid: boolean; error?: string }> => {
+  if (file.type !== "image/jpeg" && file.type !== "image/png") {
+    return { valid: false, error: "La promo debe ser JPG o PNG." };
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    return { valid: false, error: "La promo debe pesar menos de 2 MB." };
+  }
+  const bitmap = await createImageBitmap(file);
+  const { width, height } = bitmap;
+  bitmap.close();
+  if (width !== PROMO_IMAGE_WIDTH || height !== PROMO_IMAGE_HEIGHT) {
+    return {
+      valid: false,
+      error: `Esta imagen mide ${width}×${height} px. Tiene que ser ${PROMO_IMAGE_WIDTH}×${PROMO_IMAGE_HEIGHT} px.`,
+    };
+  }
+  return { valid: true };
+};

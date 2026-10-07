@@ -217,8 +217,6 @@ const Index = () => {
           </button>
         )}
 
-        {tab === "browse" && <PromoBanner />}
-
         {tab !== "settings" && (
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-display text-xl font-bold tracking-tight text-foreground">{titles[tab]}</h2>
@@ -350,6 +348,7 @@ const Index = () => {
       </main>
 
       <BottomNav tab={tab} onChange={changeTab} />
+      <PromoBanner />
 
       {openRestaurant && (
         <RestaurantPage

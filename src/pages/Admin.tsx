@@ -6,13 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Upload, X, Megaphone, Clock, Maximize2, LogOut } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, X, Megaphone, LogOut } from "lucide-react";
 import { Restaurant, MenuCategory } from "@/data/restaurants";
 import { useRestaurants } from "@/hooks/useRestaurants";
-import { getBannerConfig, saveBannerConfig, BannerConfig, BannerSize } from "@/data/bannerConfig";
+import { getBannerConfig, saveBannerConfig, BannerConfig } from "@/data/bannerConfig";
 import { useToast } from "@/hooks/use-toast";
-import { uploadImageToPublic, validateImageFile } from "@/utils/imageUpload";
-import { isValidBannerUrl } from "@/utils/urlValidation";
+import { uploadImageToPublic, validateImageFile, validatePromoImage, PROMO_IMAGE_WIDTH, PROMO_IMAGE_HEIGHT } from "@/utils/imageUpload";
 import { PREDEFINED_CATEGORIES, getCategoryMeta } from "@/lib/categoryMeta";
 import { supabase } from "@/integrations/supabase/client";
 import PushNotificationsPanel from "@/components/admin/PushNotificationsPanel";
@@ -205,13 +204,6 @@ const Admin = () => {
   };
 
   const updateBanner = async (updated: BannerConfig) => {
-    if (updated.linkUrl) {
-      const validation = isValidBannerUrl(updated.linkUrl);
-      if (!validation.valid) {
-        toast({ title: "URL inválida", description: validation.error, variant: "destructive" });
-        return;
-      }
-    }
     setBannerConfig(updated);
     await saveBannerConfig(updated);
   };
@@ -616,7 +608,7 @@ const Admin = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Megaphone className="w-5 h-5 text-primary" />
-              Banner Promocional
+              Promo de entrada
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -625,100 +617,57 @@ const Admin = () => {
                 id="bannerEnabled"
                 checked={bannerConfig.enabled}
                 onCheckedChange={(checked) => {
-                  const updated = { ...bannerConfig, enabled: checked };
-                  updateBanner(updated);
-                  toast({ title: checked ? "Banner activado" : "Banner desactivado" });
+                  if (checked && !bannerConfig.image) {
+                    toast({
+                      title: "Falta la imagen",
+                      description: "Sube la promo antes de activarla.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  updateBanner({ ...bannerConfig, enabled: checked });
+                  toast({ title: checked ? "Promo activada" : "Promo desactivada" });
                 }}
               />
               <Label htmlFor="bannerEnabled" className="font-medium">
-                {bannerConfig.enabled ? "Banner activo" : "Banner desactivado"}
+                {bannerConfig.enabled ? "Promo activa" : "Promo desactivada"}
               </Label>
             </div>
+            <p className="text-sm text-muted-foreground">
+              Cuando está activa, la imagen cubre la pantalla al entrar. La persona espera 5 segundos y después puede cerrarla.
+            </p>
 
-            {/* Schedule */}
-            <div className="p-4 rounded-lg border bg-muted/30">
-              <div className="flex items-center gap-2 mb-3">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <Label className="font-medium">Programar horario (opcional)</Label>
-              </div>
-              <p className="text-xs text-muted-foreground mb-3">
-                Si configuras un horario, el banner solo se mostrará durante esas horas. Déjalo vacío para mostrarlo todo el día.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm">Hora inicio</Label>
-                  <Input
-                    type="time"
-                    value={bannerConfig.scheduleStart || ""}
-                    onChange={(e) => updateBanner({ ...bannerConfig, scheduleStart: e.target.value || null })}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm">Hora fin</Label>
-                  <Input
-                    type="time"
-                    value={bannerConfig.scheduleEnd || ""}
-                    onChange={(e) => updateBanner({ ...bannerConfig, scheduleEnd: e.target.value || null })}
-                    className="mt-1"
-                  />
-                </div>
-              </div>
-              {bannerConfig.scheduleStart && bannerConfig.scheduleEnd && (
-                <p className="text-xs text-primary mt-2">
-                  ⏰ El banner se mostrará de {bannerConfig.scheduleStart} a {bannerConfig.scheduleEnd}
-                </p>
-              )}
-            </div>
-
-            {/* Size */}
-            <div className="p-4 rounded-lg border bg-muted/30">
-              <div className="flex items-center gap-2 mb-3">
-                <Maximize2 className="w-4 h-4 text-muted-foreground" />
-                <Label className="font-medium">Tamaño del banner</Label>
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                {([
-                  { value: "small" as BannerSize, label: "Pequeño (fijo)", desc: "Se mantiene visible al hacer scroll" },
-                  { value: "medium" as BannerSize, label: "Mediano", desc: "Tamaño estándar" },
-                  { value: "large" as BannerSize, label: "Grande", desc: "Máxima visibilidad" },
-                ]).map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => updateBanner({ ...bannerConfig, size: opt.value })}
-                    className={`p-3 rounded-lg border text-left transition-all ${
-                      bannerConfig.size === opt.value
-                        ? "border-primary bg-primary/10 ring-1 ring-primary"
-                        : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <p className="text-sm font-medium">{opt.label}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{opt.desc}</p>
-                  </button>
-                ))}
-              </div>
+            <div className="rounded-lg border bg-muted/30 p-4 text-sm">
+              <p className="font-medium text-foreground">Qué imagen subir</p>
+              <ul className="mt-2 space-y-1 text-muted-foreground">
+                <li>Medida exacta: {PROMO_IMAGE_WIDTH} × {PROMO_IMAGE_HEIGHT} px, vertical (9:16).</li>
+                <li>Formato: JPG o PNG. Peso máximo: 2 MB.</li>
+                <li>La imagen llena el teléfono. Deja libre la esquina superior derecha: ahí va la cuenta de 5 segundos y la X.</li>
+                <li>Pon el texto y el logo hacia el centro, con margen, para que no se corten.</li>
+              </ul>
             </div>
 
             <div>
-              <Label>Imagen del banner</Label>
-              <div className="flex items-center gap-3 mt-1">
+              <Label>Imagen de la promo</Label>
+              <div className="mt-1">
                 <Input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png"
                   disabled={isBannerUploading}
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
+                    e.target.value = "";
                     if (!file) return;
-                    const validation = validateImageFile(file);
+                    const validation = await validatePromoImage(file);
                     if (!validation.valid) {
-                      toast({ title: "Error", description: validation.error, variant: "destructive" });
+                      toast({ title: "Imagen no válida", description: validation.error, variant: "destructive" });
                       return;
                     }
                     setIsBannerUploading(true);
                     try {
                       const imageUrl = await uploadImageToPublic(file);
                       await updateBanner({ ...bannerConfig, image: imageUrl });
-                      toast({ title: "Imagen del banner cargada" });
+                      toast({ title: "Imagen de la promo cargada" });
                     } catch {
                       toast({ title: "Error al cargar imagen", variant: "destructive" });
                     } finally {
@@ -728,48 +677,21 @@ const Admin = () => {
                 />
               </div>
               {bannerConfig.image && (
-                <div className="mt-2 flex items-center gap-3">
-                  <img src={bannerConfig.image} alt="Banner preview" className="h-20 rounded-lg border object-cover" />
+                <div className="mt-3 flex items-end gap-3">
+                  <img
+                    src={bannerConfig.image}
+                    alt="Vista previa de la promo"
+                    className="h-44 w-[99px] rounded-lg border object-cover"
+                  />
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => updateBanner({ ...bannerConfig, image: "" })}
+                    onClick={() => updateBanner({ ...bannerConfig, image: "", enabled: false })}
                   >
                     <X className="w-4 h-4" /> Quitar
                   </Button>
                 </div>
               )}
-            </div>
-
-            <div>
-              <Label>Texto del banner</Label>
-              <Textarea
-                value={bannerConfig.text}
-                onChange={(e) => updateBanner({ ...bannerConfig, text: e.target.value })}
-                placeholder="Ej: 🔥 ¡Promoción especial! 2x1 en pizzas este fin de semana"
-                className="mt-1"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>URL del enlace (opcional)</Label>
-                <Input
-                  value={bannerConfig.linkUrl}
-                  onChange={(e) => updateBanner({ ...bannerConfig, linkUrl: e.target.value })}
-                  placeholder="https://..."
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label>Texto del botón (opcional)</Label>
-                <Input
-                  value={bannerConfig.linkText}
-                  onChange={(e) => updateBanner({ ...bannerConfig, linkText: e.target.value })}
-                  placeholder="Ver más"
-                  className="mt-1"
-                />
-              </div>
             </div>
           </CardContent>
         </Card>

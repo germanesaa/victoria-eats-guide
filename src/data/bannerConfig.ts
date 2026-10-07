@@ -12,6 +12,7 @@ export interface BannerConfig {
   scheduleStart?: string | null;
   scheduleEnd?: string | null;
   size: BannerSize;
+  updatedAt?: string;
 }
 
 const defaultBanner: BannerConfig = {
@@ -46,6 +47,7 @@ export const getBannerConfig = async (): Promise<BannerConfig> => {
       scheduleStart: row.schedule_start || null,
       scheduleEnd: row.schedule_end || null,
       size: (row.size as BannerSize) || "medium",
+      updatedAt: row.updated_at || "",
     };
   } catch {
     return defaultBanner;
