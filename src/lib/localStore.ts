@@ -1,4 +1,4 @@
-export type ThemeMode = "light" | "dark";
+export type ThemeMode = "light" | "premium" | "dark";
 
 export type StoredReview = {
   id: string;
@@ -37,10 +37,12 @@ export const saveReviews = (reviews: StoredReview[]) => write(REVIEWS_KEY, revie
 
 export const loadTheme = (): ThemeMode => {
   const value = localStorage.getItem(THEME_KEY);
-  return value === "dark" ? "dark" : "light";
+  if (value === "dark" || value === "premium" || value === "light") return value;
+  return "light";
 };
 
 export const applyTheme = (mode: ThemeMode) => {
   document.documentElement.classList.toggle("dark", mode === "dark");
+  document.documentElement.classList.toggle("premium", mode === "premium");
   localStorage.setItem(THEME_KEY, mode);
 };

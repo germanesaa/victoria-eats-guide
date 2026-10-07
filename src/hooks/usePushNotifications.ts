@@ -43,6 +43,33 @@ const findRegistration = async () => {
   return regs.find((r) => (r.active || r.installing || r.waiting)?.scriptURL.includes("push-sw.js"));
 };
 
+const waitForActive = (registration: ServiceWorkerRegistration) => {
+  if (registration.active) return Promise.resolve(registration);
+  const worker = registration.installing || registration.waiting;
+  if (!worker) return Promise.resolve(registration);
+  return new Promise<ServiceWorkerRegistration>((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error("El servicio de notificaciones no arrancó.")), 8000);
+    worker.addEventListener("statechange", () => {
+      if (worker.state === "activated") {
+        window.clearTimeout(timer);
+        resolve(registration);
+      }
+      if (worker.state === "redundant") {
+        window.clearTimeout(timer);
+        reject(new Error("No se pudo preparar las notificaciones."));
+      }
+    });
+  });
+};
+
+const ensureRegistration = async () => {
+  const existing = await findRegistration();
+  const registration = existing ?? (await navigator.serviceWorker.register(SW_URL));
+  return waitForActive(registration);
+};
+
+export type PushResult = { ok: boolean; message: string };
+
 const fetchServerKey = async () => {
   try {
     const { data, error } = await supabase.functions.invoke("push-public-key");
@@ -69,7 +96,7 @@ export const usePushNotifications = () => {
     let cancelled = false;
     (async () => {
       try {
-        const reg = (await findRegistration()) ?? (await navigator.serviceWorker.register(SW_URL));
+        const reg = await ensureRegistration();
         const sub = await reg.pushManager.getSubscription();
         if (!cancelled) setSubscribed(!!sub);
       } catch {
@@ -81,20 +108,30 @@ export const usePushNotifications = () => {
     };
   }, [supported]);
 
-  const subscribe = useCallback(async () => {
-    if (!supported) return false;
+  const subscribe = useCallback(async (): Promise<PushResult> => {
+    if (!supported) {
+      const message =
+        isIOS() && !isStandalone()
+          ? "En iPhone, instala la app y ábrela desde el ícono para activar las notificaciones."
+          : "Este navegador no permite notificaciones.";
+      setError(message);
+      return { ok: false, message };
+    }
     setLoading(true);
     setError(null);
     try {
       const perm = await Notification.requestPermission();
       setPermission(perm);
       if (perm !== "granted") {
-        setError("Permiso denegado");
-        return false;
+        const message =
+          perm === "denied"
+            ? "Las notificaciones están bloqueadas. Actívalas en los ajustes del navegador."
+            : "Hay que permitir las notificaciones para activarlas.";
+        setError(message);
+        return { ok: false, message };
       }
 
-      const registration = (await findRegistration()) ?? (await navigator.serviceWorker.register(SW_URL));
-      await navigator.serviceWorker.ready;
+      const registration = await ensureRegistration();
 
       const serverKey = await fetchServerKey();
 
@@ -115,25 +152,28 @@ export const usePushNotifications = () => {
       }
 
       const json = sub.toJSON() as { endpoint?: string; keys?: { p256dh?: string; auth?: string } };
-      const { error: dbError } = await supabase.from("push_subscriptions" as any).upsert(
-        {
-          endpoint: json.endpoint || sub.endpoint,
-          p256dh: json.keys?.p256dh || arrayBufferToBase64Url(sub.getKey("p256dh")),
-          auth: json.keys?.auth || arrayBufferToBase64Url(sub.getKey("auth")),
-          user_agent: navigator.userAgent.slice(0, 255),
-        } as any,
-        { onConflict: "endpoint", ignoreDuplicates: true } as any
-      );
-      if (dbError) {
-        setError(dbError.message);
-        return false;
+      const { error: dbError } = await supabase.from("push_subscriptions" as any).insert({
+        endpoint: json.endpoint || sub.endpoint,
+        p256dh: json.keys?.p256dh || arrayBufferToBase64Url(sub.getKey("p256dh")),
+        auth: json.keys?.auth || arrayBufferToBase64Url(sub.getKey("auth")),
+        user_agent: navigator.userAgent.slice(0, 255),
+      } as any);
+      const alreadySaved = (dbError as { code?: string } | null)?.code === "23505";
+      if (dbError && !alreadySaved) {
+        const message = "No se pudo guardar este teléfono. Inténtalo de nuevo.";
+        setError(message);
+        return { ok: false, message };
       }
 
       setSubscribed(true);
-      return true;
+      return { ok: true, message: "Te avisaremos de las promociones." };
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error desconocido");
-      return false;
+      const raw = e instanceof Error ? e.message : "";
+      const message = /push service not available/i.test(raw)
+        ? "Este navegador no puede recibir avisos. Ábrelo en Chrome del teléfono o instala la app."
+        : raw || "No se pudieron activar las notificaciones.";
+      setError(message);
+      return { ok: false, message };
     } finally {
       setLoading(false);
     }

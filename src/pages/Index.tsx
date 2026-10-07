@@ -4,8 +4,9 @@ import RestaurantPage from "@/components/RestaurantPage";
 import SearchBar from "@/components/SearchBar";
 import PlacePicker from "@/components/PlacePicker";
 import BottomNav, { AppTab } from "@/components/BottomNav";
-import { Bell, BellOff, Moon, Sun } from "lucide-react";
+import { Bell, BellOff, Download, Moon, Sparkles, Sun } from "lucide-react";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { usePwaInstall } from "@/hooks/usePwaInstall";
 import { useToast } from "@/hooks/use-toast";
 import PromoBanner from "@/components/PromoBanner";
 import InstallPrompt from "@/components/InstallPrompt";
@@ -41,9 +42,11 @@ const Index = () => {
     supported: pushSupported,
     subscribed: pushSubscribed,
     loading: pushLoading,
+    error: pushError,
     subscribe: pushSubscribe,
     unsubscribe: pushUnsubscribe,
   } = usePushNotifications();
+  const { canInstall, installed, ios, install } = usePwaInstall();
 
   useEffect(() => {
     setFavorites(loadFavorites());
@@ -151,15 +154,11 @@ const Index = () => {
       await pushUnsubscribe();
       toast({ title: "Notificaciones desactivadas", description: "Ya no recibirás avisos de promociones." });
     } else {
-      const ok = await pushSubscribe();
+      const result = await pushSubscribe();
       toast(
-        ok
-          ? { title: "Notificaciones activadas", description: "Te avisaremos de las promociones." }
-          : {
-              title: "No se activaron",
-              description: "Permite las notificaciones en tu navegador.",
-              variant: "destructive" as const,
-            }
+        result.ok
+          ? { title: "Notificaciones activadas", description: result.message }
+          : { title: "No se activaron", description: result.message, variant: "destructive" as const }
       );
     }
   };
@@ -231,43 +230,80 @@ const Index = () => {
             <h2 className="font-display text-xl font-bold tracking-tight text-foreground">Ajustes</h2>
             <div className="rounded-2xl bg-card p-4 shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
               <p className="text-sm font-medium text-foreground">Apariencia</p>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setMode("light")}
-                  className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium ${
-                    theme === "light" ? "bg-[#709a2d] text-[#262826]" : "text-[#262826] ring-1 ring-[#47542f] dark:text-[#e6d7c8] dark:ring-[#e6d7c8]"
-                  }`}
-                >
-                  <Sun className="h-4 w-4" />
-                  Claro
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMode("dark")}
-                  className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-medium ${
-                    theme === "dark" ? "bg-[#709a2d] text-[#262826]" : "text-[#262826] ring-1 ring-[#47542f] dark:text-[#e6d7c8] dark:ring-[#e6d7c8]"
-                  }`}
-                >
-                  <Moon className="h-4 w-4" />
-                  Oscuro
-                </button>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                {(
+                  [
+                    { id: "light" as const, label: "Claro", icon: Sun },
+                    { id: "premium" as const, label: "Premium", icon: Sparkles },
+                    { id: "dark" as const, label: "Oscuro", icon: Moon },
+                  ]
+                ).map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setMode(id)}
+                    className={`flex items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-sm font-medium ${
+                      theme === id
+                        ? "bg-[#709a2d] text-[#262826]"
+                        : "text-[#262826] ring-1 ring-[#47542f] dark:text-[#e6d7c8] dark:ring-[#e6d7c8]"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
-            {pushSupported && (
-              <div className="rounded-2xl bg-card p-4 shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
-                <p className="text-sm font-medium text-foreground">Notificaciones</p>
-                <button
-                  type="button"
-                  onClick={handleToggleNotifications}
-                  disabled={pushLoading}
-                  className="mt-3 flex h-11 items-center gap-2 rounded-xl bg-[#47542f] px-3 text-sm font-medium text-[#e6d7c8]"
-                >
-                  {pushSubscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
-                  {pushSubscribed ? "Desactivar promociones" : "Activar promociones"}
-                </button>
-              </div>
-            )}
+            <div className="rounded-2xl bg-card p-4 shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
+              <p className="text-sm font-medium text-foreground">Notificaciones</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {pushSupported
+                  ? "Avisos de promociones en este teléfono."
+                  : "En iPhone, instala la app y ábrela desde el ícono. Ahí sí se pueden activar."}
+              </p>
+              <button
+                type="button"
+                onClick={handleToggleNotifications}
+                disabled={pushLoading || !pushSupported}
+                className="mt-3 flex h-11 items-center gap-2 rounded-xl bg-[#47542f] px-3 text-sm font-medium text-[#e6d7c8] disabled:opacity-60"
+              >
+                {pushSubscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+                {pushSubscribed ? "Desactivar promociones" : "Activar promociones"}
+              </button>
+              {pushError && <p className="mt-2 text-xs text-[#47542f] dark:text-[#e6d7c8]">{pushError}</p>}
+            </div>
+            <div className="rounded-2xl bg-card p-4 shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
+              <p className="text-sm font-medium text-foreground">Instalar la app</p>
+              {installed ? (
+                <p className="mt-1 text-xs text-muted-foreground">QuéComer ya está instalada en este teléfono.</p>
+              ) : ios ? (
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  En iPhone, toca Compartir y luego Añadir a pantalla de inicio.
+                </p>
+              ) : (
+                <>
+                  <p className="mt-1 text-xs text-muted-foreground">Guárdala en la pantalla de inicio para abrirla como una app.</p>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!canInstall) {
+                        toast({
+                          title: "Instalar",
+                          description: "Abre el menú del navegador y elige Instalar aplicación.",
+                        });
+                        return;
+                      }
+                      const accepted = await install();
+                      if (accepted) toast({ title: "Listo", description: "QuéComer se está instalando." });
+                    }}
+                    className="mt-3 flex h-11 items-center gap-2 rounded-xl bg-[#709a2d] px-3 text-sm font-semibold text-[#262826]"
+                  >
+                    <Download className="h-4 w-4" />
+                    Instalar
+                  </button>
+                </>
+              )}
+            </div>
           </section>
         )}
 
@@ -275,7 +311,7 @@ const Index = () => {
           <div className="space-y-4">
             {directoryGroups.map(([letter, group]) => (
               <section key={letter}>
-                <h3 className="sticky top-36 z-10 bg-[#e6d7c8] py-1 text-xs font-semibold text-[#47542f] dark:bg-[#47542f] dark:text-[#e6d7c8]">{letter}</h3>
+                <h3 className="sticky top-36 z-10 bg-background py-1 text-xs font-semibold text-[#47542f] dark:bg-[#47542f] dark:text-[#e6d7c8]">{letter}</h3>
                 <ul className="overflow-hidden rounded-2xl bg-card shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
                   {group.map((restaurant) => (
                     <li key={restaurant.id}>
