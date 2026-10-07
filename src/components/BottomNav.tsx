@@ -17,7 +17,7 @@ const items: { id: AppTab; label: string; icon: typeof Star }[] = [
 
 const BottomNav = ({ tab, onChange }: BottomNavProps) => (
   <nav
-    className="fixed inset-x-0 bottom-0 z-50 border-t border-[#47542f]/30 bg-[#e6d7c8] dark:border-[#709a2d]/40 dark:bg-[#262826]"
+    className="fixed inset-x-0 bottom-0 z-50 bg-[#e6d7c8] shadow-[0_-10px_28px_rgba(38,40,38,0.08)] dark:bg-[#262826]"
     style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     aria-label="Navegación principal"
   >

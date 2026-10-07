@@ -25,6 +25,8 @@ interface Restaurant {
 interface RestaurantCardProps {
   restaurant: Restaurant;
   favorite?: boolean;
+  rating?: number;
+  reviewCount?: number;
   onOpen?: () => void;
   onToggleFavorite?: () => void;
   onCategoryClick?: (category: string) => void;
@@ -57,7 +59,7 @@ const getStatusText = (status: RestaurantStatus, opensIn?: string) => {
   }
 };
 
-const RestaurantCard = ({ restaurant, favorite, onOpen, onToggleFavorite, onCategoryClick, onStatusClick }: RestaurantCardProps) => {
+const RestaurantCard = ({ restaurant, favorite, rating = 0, reviewCount = 0, onOpen, onToggleFavorite, onCategoryClick, onStatusClick }: RestaurantCardProps) => {
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (target.closest("[data-no-menu]")) return;
@@ -74,7 +76,7 @@ const RestaurantCard = ({ restaurant, favorite, onOpen, onToggleFavorite, onCate
   return (
     <>
       <div
-        className="group flex cursor-pointer flex-col rounded-3xl border border-border/50 bg-card p-2 shadow-sm"
+        className="group flex cursor-pointer flex-col rounded-3xl bg-card p-2 shadow-[0_10px_28px_rgba(38,40,38,0.14)] dark:shadow-[0_16px_36px_rgba(38,40,38,0.4)]"
         onClick={handleCardClick}
       >
         {/* Image — separated, fully rounded card */}
@@ -130,6 +132,19 @@ const RestaurantCard = ({ restaurant, favorite, onOpen, onToggleFavorite, onCate
             <h3 className="font-display text-sm md:text-base font-bold tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
               {restaurant.name}
             </h3>
+          </div>
+          <div className="flex items-center gap-1" aria-label={reviewCount > 0 ? `${rating.toFixed(1)} de 5` : "Sin reseñas"}>
+            {[1, 2, 3, 4, 5].map((value) => (
+              <Star
+                key={value}
+                className={`h-3 w-3 ${
+                  reviewCount > 0 && value <= Math.round(rating)
+                    ? "fill-[#47542f] text-[#47542f] dark:fill-[#709a2d] dark:text-[#709a2d]"
+                    : "text-[#47542f]/35 dark:text-[#e6d7c8]/35"
+                }`}
+              />
+            ))}
+            {reviewCount > 0 && <span className="text-[10px] font-semibold text-[#47542f] dark:text-[#e6d7c8]">{rating.toFixed(1)}</span>}
           </div>
 
           {/* Category icons + status pill */}

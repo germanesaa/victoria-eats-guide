@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import RestaurantCard from "@/components/RestaurantCard";
 import RestaurantPage from "@/components/RestaurantPage";
 import SearchBar from "@/components/SearchBar";
+import PlacePicker from "@/components/PlacePicker";
 import BottomNav, { AppTab } from "@/components/BottomNav";
 import { Bell, BellOff, Moon, Sun } from "lucide-react";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -107,6 +108,14 @@ const Index = () => {
 
   const openRestaurant = restaurantsWithStatus.find((restaurant) => restaurant.id === openId) || null;
 
+  const ratingByRestaurant = useMemo(() => {
+    const grouped = new Map<string, number[]>();
+    reviews.forEach((review) => {
+      grouped.set(review.restaurantId, [...(grouped.get(review.restaurantId) || []), review.stars]);
+    });
+    return grouped;
+  }, [reviews]);
+
   const toggleFavorite = (id: string) => {
     setFavorites((current) => {
       const next = current.includes(id) ? current.filter((item) => item !== id) : [...current, id];
@@ -179,9 +188,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-[70] bg-[#47542f]">
+      <header className="sticky top-0 z-[70] bg-[#47542f] dark:bg-[#262826]">
         <div className="mx-auto max-w-lg px-4 pb-4 pt-4">
-          <img src="/brand/logo-blanco.png" alt="QuéComer" className="mb-3 h-14 w-auto" />
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <img src="/brand/logo-blanco.png" alt="QuéComer" className="h-14 w-auto" />
+            <PlacePicker />
+          </div>
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
@@ -219,7 +231,7 @@ const Index = () => {
         {tab === "settings" && (
           <section className="space-y-4">
             <h2 className="font-display text-xl font-bold tracking-tight text-foreground">Ajustes</h2>
-            <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="rounded-2xl bg-card p-4 shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
               <p className="text-sm font-medium text-foreground">Apariencia</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <button
@@ -245,13 +257,13 @@ const Index = () => {
               </div>
             </div>
             {pushSupported && (
-              <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="rounded-2xl bg-card p-4 shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
                 <p className="text-sm font-medium text-foreground">Notificaciones</p>
                 <button
                   type="button"
                   onClick={handleToggleNotifications}
                   disabled={pushLoading}
-                  className="mt-3 flex h-11 items-center gap-2 rounded-xl bg-muted px-3 text-sm font-medium"
+                  className="mt-3 flex h-11 items-center gap-2 rounded-xl bg-[#47542f] px-3 text-sm font-medium text-[#e6d7c8]"
                 >
                   {pushSubscribed ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
                   {pushSubscribed ? "Desactivar promociones" : "Activar promociones"}
@@ -265,8 +277,8 @@ const Index = () => {
           <div className="space-y-4">
             {directoryGroups.map(([letter, group]) => (
               <section key={letter}>
-                <h3 className="sticky top-36 z-10 bg-[#e6d7c8] py-1 text-xs font-semibold text-[#47542f] dark:bg-[#262826] dark:text-[#e6d7c8]">{letter}</h3>
-                <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+                <h3 className="sticky top-36 z-10 bg-[#e6d7c8] py-1 text-xs font-semibold text-[#47542f] dark:bg-[#47542f] dark:text-[#e6d7c8]">{letter}</h3>
+                <ul className="overflow-hidden rounded-2xl bg-card shadow-[0_10px_28px_rgba(38,40,38,0.12)]">
                   {group.map((restaurant) => (
                     <li key={restaurant.id}>
                       <button
@@ -303,6 +315,12 @@ const Index = () => {
                 key={restaurant.id}
                 restaurant={restaurant}
                 favorite={favorites.includes(restaurant.id)}
+                rating={(() => {
+                  const scores = ratingByRestaurant.get(restaurant.id) || [];
+                  if (!scores.length) return 0;
+                  return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+                })()}
+                reviewCount={(ratingByRestaurant.get(restaurant.id) || []).length}
                 onOpen={() => setOpenId(restaurant.id)}
                 onToggleFavorite={() => toggleFavorite(restaurant.id)}
                 onCategoryClick={(category) => setSelectedCategory(category.toLowerCase())}
