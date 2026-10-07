@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { X, Share, Plus, Download } from "lucide-react";
+import { X, Share, Plus } from "lucide-react";
 
 type BIPEvent = Event & {
   prompt: () => Promise<void>;
@@ -61,9 +61,11 @@ const InstallPrompt = () => {
   return (
     <div className="fixed bottom-24 left-4 right-4 z-[60] animate-in slide-in-from-bottom-4">
       <div className="bg-card rounded-2xl shadow-2xl border border-border/60 p-4 flex gap-3 items-start">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center flex-shrink-0">
-          <Download className="w-5 h-5 text-primary-foreground" />
-        </div>
+        <img
+          src="/brand/mark-original.png"
+          alt=""
+          className="w-11 h-11 rounded-xl bg-white object-contain flex-shrink-0"
+        />
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-sm text-foreground leading-tight">
             Instala QuéComer

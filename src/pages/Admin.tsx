@@ -54,7 +54,12 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
-        <CardHeader>
+        <CardHeader className="items-center space-y-3">
+          <img
+            src="/brand/logo-original.png"
+            alt="QuéComer"
+            className="h-16 w-auto"
+          />
           <CardTitle className="text-center">Acceso Administrador</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -9,7 +9,6 @@ import InstallPrompt from "@/components/InstallPrompt";
 import NotificationOptIn from "@/components/NotificationOptIn";
 import { useRestaurants } from "@/hooks/useRestaurants";
 import { useRestaurantStatus, RestaurantStatus } from "@/hooks/useRestaurantStatus";
-import quecomerLogo from "@/assets/quecomer-logo-green.png.asset.json";
 import { getCategoryMeta, getAllCategories } from "@/lib/categoryMeta";
 
 const Index = () => {
@@ -118,18 +117,11 @@ const Index = () => {
       {/* Colored brand header — top half of the two-tone layout */}
       <header className="fixed top-0 left-0 right-0 z-50 h-14 bg-gradient-to-br from-primary/70 to-primary-dark/70 backdrop-blur-xl rounded-b-2xl shadow-sm border-b border-primary-foreground/10">
         <div className="container mx-auto h-full px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-card/90 rounded-full p-1 flex items-center justify-center shadow-sm">
-              <img
-                src={quecomerLogo.url}
-                alt="QuéComer"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <span className="font-display text-base font-bold text-primary-foreground tracking-tight">
-              Qué Comer
-            </span>
-          </div>
+          <img
+            src="/brand/logo-original.png"
+            alt="QuéComer"
+            className="h-9 w-auto"
+          />
           {pushSupported && (
             <button
               type="button"
@@ -251,6 +243,11 @@ const Index = () => {
           )}
 
           <footer className="mt-10 border-t border-border px-2 py-6 text-center">
+            <img
+              src="/brand/mark-original.png"
+              alt=""
+              className="mx-auto mb-3 h-10 w-auto"
+            />
             <p className="text-sm font-medium leading-relaxed text-foreground">
               © 2026 quecomerve.com - Operado por German jose esaa alezard.
             </p>
